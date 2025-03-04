@@ -1,0 +1,23 @@
+form {
+    display: flex;
+    flex-direction: column;
+    max-width: 300px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  input {
+    margin: 10px 0;
+    padding: 8px;
+  }
+  
+  button {
+    margin-top: 20px;
+    padding: 10px;
+  }
+  
+  a {
+    display: block;
+    text-align: center;
+    margin-top: 20px;
+  }
