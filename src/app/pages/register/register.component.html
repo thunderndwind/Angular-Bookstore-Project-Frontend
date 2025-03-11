@@ -1,0 +1,114 @@
+<div class="container mt-5">
+  <h2>Register</h2>
+  <div class="alert alert-danger" *ngIf="errorMessage">{{ errorMessage }}</div>
+
+  <form (ngSubmit)="register()" #registerForm="ngForm">
+    <div class="mb-3">
+      <label class="form-label">First Name</label>
+      <input
+        type="text"
+        class="form-control"
+        id="fName"
+        name="fName"
+        [(ngModel)]="fName"
+        #fNameRef="ngModel"
+        required
+      />
+      <div class="text-danger" *ngIf="fNameRef.invalid && fNameRef.touched">
+        First Name is required.
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Last Name</label>
+      <input
+        type="text"
+        class="form-control"
+        id="lName"
+        name="lName"
+        [(ngModel)]="lName"
+        #lNameRef="ngModel"
+        required
+      />
+      <div class="text-danger" *ngIf="lNameRef.invalid && lNameRef.touched">
+        Last Name is required.
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">User Name</label>
+      <input
+        type="text"
+        class="form-control"
+        id="uName"
+        name="uName"
+        [(ngModel)]="uName"
+        #uNameRef="ngModel"
+        required
+      />
+      <div class="text-danger" *ngIf="uNameRef.invalid && uNameRef.touched">
+        Username is required.
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label for="email" class="form-label">Email</label>
+      <input
+        type="email"
+        class="form-control"
+        id="email"
+        name="email"
+        [(ngModel)]="email"
+        #emailRef="ngModel"
+        required
+        email
+      />
+      <div class="text-danger" *ngIf="emailRef.invalid && emailRef.touched">
+        <span *ngIf="emailRef.errors?.['required']">Email is required.</span>
+        <span *ngIf="emailRef.errors?.['email']">Enter a valid email address.</span>
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Password</label>
+      <input
+        type="password"
+        class="form-control"
+        id="password"
+        name="password"
+        [(ngModel)]="password"
+        #passwordRef="ngModel"
+        required
+        minlength="6"
+      />
+      <div class="text-danger" *ngIf="passwordRef.invalid && passwordRef.touched">
+        <span *ngIf="passwordRef.errors?.['required']">Password is required.</span>
+        <span *ngIf="passwordRef.errors?.['minlength']">Password must be at least 6 characters.</span>
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Confirm Password</label>
+      <input
+        type="password"
+        class="form-control"
+        id="confirmPassword"
+        name="confirmPassword"
+        [(ngModel)]="confirmPassword"
+        #confirmPasswordRef="ngModel"
+        required
+      />
+      <div class="text-danger" *ngIf="confirmPasswordRef.touched && confirmPassword !== password">
+        Passwords do not match.
+      </div>
+    </div>
+
+    <button type="submit" class="btn btn-success" [disabled]="registerForm.invalid">
+      Register
+    </button>
+  </form>
+
+  <div class="my-3 max-w-xl mx-auto">
+    Already have an account? <a class="underline" routerLink="/login">Login</a>
+  </div>
+</div>

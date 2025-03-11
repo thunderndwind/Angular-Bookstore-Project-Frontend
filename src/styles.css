@@ -1,0 +1,25 @@
+:root {
+    --primary-color: #1E3A8A;  /* Dark Blue */
+    --secondary-color: #FFC107; /* Yellow */
+    --bg-light: #F4F4F4;
+    --bg-dark: #121212;
+    --text-light: #ffffff;
+    --text-dark: #333333;
+  }
+  
+  body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--bg-light);
+    color: var(--text-dark);
+  }
+  
+  .dark-mode {
+    background-color: var(--bg-dark);
+    color: var(--text-light);
+  }
+  
+  .card {
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
