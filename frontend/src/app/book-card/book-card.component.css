@@ -1,0 +1,72 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f8d14e;
+    font-family: Arial, sans-serif;
+    margin: 0;
+}
+
+.card {
+    width: 300px;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    padding: 20px;
+}
+
+.card-image {
+    background: url('background-pattern.jpg') no-repeat center center/cover;
+    height: 100px;
+    border-radius: 10px;
+    position: relative;
+}
+
+.badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: #ffd700;
+    color: #000;
+    font-size: 12px;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.published-date {
+    font-size: 12px;
+    color: #666;
+    margin: 10px 0;
+}
+
+.card-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin: 5px 0;
+}
+
+.card-description {
+    font-size: 14px;
+    color: #555;
+}
+
+.card-footer {
+    display: flex;
+    align-items: center;
+    margin-top: 15px;
+}
+
+.author-avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.author-name {
+    font-size: 14px;
+    font-weight: bold;
+}
