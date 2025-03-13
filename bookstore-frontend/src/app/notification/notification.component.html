@@ -1,0 +1,56 @@
+<div class="shadow-lg container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h2>Your Notifications</h2>
+      <div>
+        <button class="btn btn-secondary me-2" (click)="markAllAsRead()">
+          Mark All as Read
+        </button>
+        <button class="btn btn-danger" (click)="deleteAllNotifications()">
+          Delete All
+        </button>
+      </div>
+    </div>
+  
+    <div class="list-group">
+        @if(notifications){
+      @for (notification of notifications; track $index) {
+      <div
+        class="list-group-item d-flex justify-content-between align-items-center"
+        [ngClass]="{'list-group-item-dark': notification.read}"
+      >
+        <div>
+          <h5 class="mb-1">{{ notification.message }}</h5>
+          <small class="text-muted">{{
+            notification.createdAt | date: 'medium'
+          }}</small>
+        </div>
+        <div>
+          @if (!notification.read) {
+          <button
+            class="btn btn-sm success-btn me-2"
+            (click)="markAsRead(notification._id)"
+          >
+            Mark as Read
+          </button>
+          }
+          <button
+            class="btn btn-sm btn-danger"
+            (click)="deleteNotification(notification._id)"
+          >
+            Delete
+          </button>
+        </div>
+      </div>
+      }}
+    </div>
+  
+    <mat-paginator
+      [length]="totalNotifications"
+      [pageSize]="pageSize"
+      [pageIndex]="currentPage - 1"
+      [pageSizeOptions]="[5, 10, 20]"
+      (page)="onPageChange($event)"
+      class="mt-3"
+    >
+    </mat-paginator>
+  </div>

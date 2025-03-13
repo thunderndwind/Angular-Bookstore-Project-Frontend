@@ -1,0 +1,28 @@
+.list-group-item-dark {
+    background-color: #343a40;
+    color: #ffffff;
+  }
+  
+  .container {
+    background-color: #2c2c2c;
+    color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+  }
+  
+  .btn-secondary {
+    background-color: #4a4a4a;
+    border-color: #4a4a4a;
+  }
+  
+  .danger-btn {
+    background-color: #dc3545;
+    border-color: #dc3545;
+    color: #ffffff;
+  }
+  
+  .success-btn {
+    background-color: #283ba7;
+    border-color: #283ba7;
+    color: #ffffff;
+  }
