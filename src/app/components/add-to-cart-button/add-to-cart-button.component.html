@@ -1,0 +1,56 @@
+<div class="add-to-cart-container">
+    <!-- Quantity Selector (Optional) -->
+    @if (showQuantity) {
+    <div class="quantity-selector mb-2">
+        <div class="input-group input-group-sm">
+            <button class="btn btn-outline-secondary" type="button"
+                [disabled]="quantity <= 1"
+                (click)="decrementQuantity()">-</button>
+            <input type="number" class="form-control text-center"
+                [value]="quantity" readonly>
+            <button class="btn btn-outline-secondary" type="button"
+                [disabled]="quantity >= stock"
+                (click)="incrementQuantity()">+</button>
+        </div>
+        @if (stock <= 5 && stock > 0) {
+        <small class="text-danger d-block mt-1">
+            Only {{ stock }} left!
+        </small>
+        }
+        @if (stock <= 0) {
+        <small class="text-danger d-block mt-1">
+            Out of stock
+        </small>
+        }
+    </div>
+    }
+
+    <!-- Add to Cart Button -->
+    <button [class]="'btn ' + buttonClass" [disabled]="isAdding || stock <= 0"
+        (click)="addToCart()">
+        @if (isAdding) {
+        <span class="spinner-border spinner-border-sm me-1" role="status"
+            aria-hidden="true"></span>
+        }
+        @if (!isAdding) {
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+            fill="currentColor"
+            class="bi bi-cart-plus me-1" viewBox="0 0 16 16">
+            <path
+                d="M9 5.5a.5.5 0 0 0-1 0V7H6.5a.5.5 0 0 0 0 1H8v1.5a.5.5 0 0 0 1 0V8h1.5a.5.5 0 0 0 0-1H9V5.5z" />
+            <path
+                d="M.5 1a.5.5 0 0 0 0 1h1.11l.401 1.607 1.498 7.985A.5.5 0 0 0 4 12h1a2 2 0 1 0 0 1H2a.5.5 0 0 0 0 1h2a3 3 0 1 0 6 0 .5.5 0 0 0 0-1H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5zm3.915 10L3.102 4h10.796l-1.313 7h-8.17zM6 14a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm7 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z" />
+        </svg>
+        }
+        {{ stock <= 0 ? 'Out of Stock' : (isAdding ? 'Adding...' : 'Add to Cart'
+        ) }}
+    </button>
+
+    <!-- Feedback Messages -->
+    @if (error) {
+    <div class="alert alert-danger mt-2 py-1 px-2 small">{{ error }}</div>
+    }
+    @if (success) {
+    <div class="alert alert-success mt-2 py-1 px-2 small">{{ success }}</div>
+    }
+</div>

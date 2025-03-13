@@ -2,7 +2,7 @@ import { Component } from "@angular/core";
 import { AuthService } from "../../services/auth/auth.service";
 import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
-import { Router, RouterLink} from "@angular/router";
+import { Router, RouterLink } from "@angular/router";
 
 @Component({
   selector: "app-register",
@@ -23,7 +23,7 @@ export class RegisterComponent {
   constructor(
     private authService: AuthService,
     private router: Router
-  ) {}
+  ) { }
 
   async register() {
 
@@ -43,7 +43,7 @@ export class RegisterComponent {
       };
 
       const res = await this.authService.register(userData);
-      console.log('Registration successful. Please Login'); 
+      console.log('Registration successful. Please Login');
       this.router.navigate(['/login']);
     } catch (error) {
       this.errorMessage = 'Registration failed. Please try again.';

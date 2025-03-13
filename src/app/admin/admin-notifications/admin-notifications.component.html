@@ -1,0 +1,134 @@
+<div class="container-fluid">
+    <h2 class="mb-4">Admin Notifications</h2>
+
+    <!-- Alerts -->
+    @if (error) {
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        {{ error }}
+        <button type="button" class="btn-close" (click)="error = null"
+            aria-label="Close"></button>
+    </div>
+    }
+
+    @if (success) {
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{ success }}
+        <button type="button" class="btn-close" (click)="success = null"
+            aria-label="Close"></button>
+    </div>
+    }
+
+    <!-- Notification Form -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">Send Notification</h5>
+        </div>
+        <div class="card-body">
+            <form (ngSubmit)="sendNotification()">
+                <!-- ... (form controls remain the same) ... -->
+                <div class="d-flex justify-content-between">
+                    <button type="submit" class="btn btn-primary"
+                        [disabled]="isSending || !notificationMessage.trim() || selectedUsers.length === 0">
+                        @if (isSending) {
+                        <span class="spinner-border spinner-border-sm me-1"
+                            role="status" aria-hidden="true"></span>
+                        }
+                        Send to Selected Users
+                    </button>
+                    <button type="button" class="btn btn-danger"
+                        (click)="broadcastMessage()"
+                        [disabled]="isSending || !notificationMessage.trim()">
+                        @if (isSending) {
+                        <span class="spinner-border spinner-border-sm me-1"
+                            role="status" aria-hidden="true"></span>
+                        }
+                        Broadcast to All Users
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- User Selection -->
+    <div class="card">
+        <div
+            class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Select Recipients</h5>
+            <button class="btn btn-sm btn-outline-primary"
+                (click)="loadOnlineUsers()" [disabled]="isLoading">
+                <i class="bi bi-arrow-clockwise me-1"></i>
+                Refresh Users
+            </button>
+        </div>
+        <div class="card-body">
+            @if (isLoading) {
+            <div class="text-center my-3">
+                <div class="spinner-border" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+            } @else {
+            <div>
+                <div class="mb-3">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox"
+                            id="selectAll" [checked]="isAllSelected()"
+                            (change)="toggleSelectAll($event)">
+                        <label class="form-check-label" for="selectAll">
+                            Select All Users
+                        </label>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Select</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (user of onlineUsers; track user.userId) {
+                            <tr>
+                                <td>
+                                    <div class="form-check">
+                                        <input class="form-check-input"
+                                            type="checkbox"
+                                            [id]="'user-' + user.userId"
+                                            [checked]="isSelected(user.userId)"
+                                            (change)="toggleUserSelection(user.userId)">
+                                    </div>
+                                </td>
+                                <td>{{ user.name }}</td>
+                                <td>{{ user.email }}</td>
+                                <td><span class="badge bg-info">{{ user.role
+                                        }}</span></td>
+                                <td>
+                                    <span class="badge" [class]="{
+                                        'bg-success': user.status === 'online',
+                                        'bg-warning': user.status === 'away',
+                                        'bg-danger': user.status === 'busy',
+                                        'bg-secondary': user.status === 'offline' || user.status === 'unknown'
+                                    }">
+                                        {{ user.status }}
+                                    </span>
+                                </td>
+                            </tr>
+                            } @empty {
+                            <tr>
+                                <td colspan="5" class="text-center">No online
+                                    users found</td>
+                            </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            }
+        </div>
+    </div>
+</div>

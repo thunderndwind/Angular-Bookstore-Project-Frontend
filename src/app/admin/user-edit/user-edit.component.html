@@ -1,0 +1,148 @@
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Edit User</h2>
+        <button class="btn btn-outline-secondary" (click)="goBack()">
+            <i class="bi bi-arrow-left me-1"></i> Back to Users
+        </button>
+    </div>
+
+    <!-- Alerts -->
+    <div *ngIf="error" class="alert alert-danger alert-dismissible fade show" role="alert">
+        {{ error }}
+        <button type="button" class="btn-close" (click)="error = null" aria-label="Close"></button>
+    </div>
+
+    <div *ngIf="success" class="alert alert-success alert-dismissible fade show" role="alert">
+        {{ success }}
+        <button type="button" class="btn-close" (click)="success = null" aria-label="Close"></button>
+    </div>
+
+    <!-- Loading Spinner -->
+    <div *ngIf="isLoading" class="text-center my-5">
+        <div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+
+    <!-- User Edit Form -->
+    <div class="card" *ngIf="!isLoading">
+        <div class="card-body">
+            <form [formGroup]="userForm" (ngSubmit)="saveUser()">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="firstName" class="form-label">First Name</label>
+                        <input type="text" class="form-control" id="firstName" formControlName="firstName"
+                            [ngClass]="{'is-invalid': userForm.get('firstName')?.invalid && userForm.get('firstName')?.touched}">
+                        <div class="invalid-feedback" *ngIf="userForm.get('firstName')?.errors?.['required']">
+                            First name is required
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label for="lastName" class="form-label">Last Name</label>
+                        <input type="text" class="form-control" id="lastName" formControlName="lastName"
+                            [ngClass]="{'is-invalid': userForm.get('lastName')?.invalid && userForm.get('lastName')?.touched}">
+                        <div class="invalid-feedback" *ngIf="userForm.get('lastName')?.errors?.['required']">
+                            Last name is required
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" formControlName="email"
+                            [ngClass]="{'is-invalid': userForm.get('email')?.invalid && userForm.get('email')?.touched}">
+                        <div class="invalid-feedback" *ngIf="userForm.get('email')?.errors?.['required']">
+                            Email is required
+                        </div>
+                        <div class="invalid-feedback" *ngIf="userForm.get('email')?.errors?.['email']">
+                            Please enter a valid email address
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label for="userName" class="form-label">Username</label>
+                        <input type="text" class="form-control" id="userName" formControlName="userName"
+                            [ngClass]="{'is-invalid': userForm.get('userName')?.invalid && userForm.get('userName')?.touched}">
+                        <div class="invalid-feedback" *ngIf="userForm.get('userName')?.errors?.['required']">
+                            Username is required
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="role" class="form-label">Role</label>
+                        <select class="form-select" id="role" formControlName="role"
+                            [ngClass]="{'is-invalid': userForm.get('role')?.invalid && userForm.get('role')?.touched}">
+                            <option value="user">User</option>
+                            <option value="admin">Admin</option>
+                            <option value="moderator">Moderator</option>
+                        </select>
+                        <div class="invalid-feedback" *ngIf="userForm.get('role')?.errors?.['required']">
+                            Role is required
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <div class="form-check form-switch mt-4">
+                            <input class="form-check-input" type="checkbox" id="isActive" formControlName="isActive">
+                            <label class="form-check-label" for="isActive">
+                                Account Active
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between mt-4">
+                    <button type="button" class="btn btn-warning" (click)="resetPassword()">
+                        Reset Password
+                    </button>
+
+                    <div>
+                        <button type="button" class="btn btn-outline-secondary me-2" (click)="goBack()">
+                            Cancel
+                        </button>
+                        <button type="submit" class="btn btn-primary" [disabled]="userForm.invalid || isSaving">
+                            <span *ngIf="isSaving" class="spinner-border spinner-border-sm me-1" role="status"
+                                aria-hidden="true"></span>
+                            Save Changes
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- User Activity -->
+    <div class="card mt-4" *ngIf="!isLoading">
+        <div class="card-header">
+            <h5 class="mb-0">User Activity</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <h6>Recent Logins</h6>
+                    <ul class="list-group">
+                        <li class="list-group-item text-center py-3">
+                            <button class="btn btn-sm btn-outline-primary" (click)="loadUserDetails()">
+                                <i class="bi bi-arrow-clockwise me-1"></i> Load Activity
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <h6>Recent Actions</h6>
+                    <ul class="list-group">
+                        <li class="list-group-item text-center py-3">
+                            <button class="btn btn-sm btn-outline-primary" (click)="loadUserDetails()">
+                                <i class="bi bi-arrow-clockwise me-1"></i> Load Activity
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

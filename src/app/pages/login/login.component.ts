@@ -19,20 +19,20 @@ export class LoginComponent {
   constructor(
     private authService: AuthService,
     private router: Router
-  ) {}
+  ) { }
 
   async login() {
     this.errorMessage = '';
-  
+
     if (!this.email || !this.password) {
       this.errorMessage = 'Please enter both email and password';
       return;
     }
-  
+
     try {
       const res = await this.authService.login(this.email, this.password);
       console.log('Login response:', res);
-  
+
       if (res.accessToken && res.refreshToken) {
         this.router.navigate(['/']);
       } else {

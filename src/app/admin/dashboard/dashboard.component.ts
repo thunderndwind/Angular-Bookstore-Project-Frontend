@@ -14,7 +14,7 @@ export class AdminDashboardComponent implements OnInit {
   isLoading: boolean = true;
   error: string | null = null;
 
-  constructor(private adminService: AdminService) {}
+  constructor(private adminService: AdminService) { }
 
   ngOnInit() {
     this.loadDashboardData();
