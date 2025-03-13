@@ -49,9 +49,17 @@ export const routes: Routes = [
         title: 'User Profile',
     },
     {
-        path: 'order/order-history/:id',
+        path: 'order/user/:id',
         component: OrderHistoryComponent,
         title: 'Order History',
+    },
+    {
+        path: 'notifications',
+        children: [
+            { path: 'user/:userId', component: NotificationComponent },
+            { path: 'user/:userId/unread-count', component: NotificationComponent },
+            { path: '**', component: NotificationComponent }
+        ]
     },
     { path: 'cart', component: CartComponent },
     { path: '**', component: NotFoundComponent }
