@@ -6,10 +6,11 @@ import { FooterComponent } from './footer/footer.component';
 import { BookCardComponent } from './book-card/book-card.component';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
+import { PaginationComponent } from './pagination/pagination.component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, HeaderComponent, BookCardComponent, FooterComponent,CommonModule],
+  imports: [RouterOutlet, HeaderComponent, BookCardComponent, FooterComponent,CommonModule, PaginationComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
