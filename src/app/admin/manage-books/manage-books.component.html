@@ -1,79 +1,160 @@
-<div class="container mt-5">
-  <h2 class="mb-4">Manage Books</h2>
-  
-  <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
-  
-  <button *ngIf="!showForm" class="btn btn-success mb-3" (click)="openAddForm()">Add New Book</button>
-  
-  <!-- Book Form -->
-  <div *ngIf="showForm" class="card mb-4">
-    <div class="card-header">
-      {{ isEditing ? 'Edit Book' : 'Add New Book' }}
-    </div>
-    <div class="card-body">
-      <form (submit)="saveBook()">
-        <div class="mb-3">
-          <label for="bookTitle" class="form-label">Title</label>
-          <input
-            type="text"
-            class="form-control"
-            id="bookTitle"
-            [(ngModel)]="bookTitle"
-            name="bookTitle"
-            required
-          />
-        </div>
-        <div class="mb-3">
-          <label for="bookPrice" class="form-label">Price</label>
-          <input
-            type="number"
-            class="form-control"
-            id="bookPrice"
-            [(ngModel)]="bookPrice"
-            name="bookPrice"
-            required
-          />
-        </div>
-        <div class="d-flex gap-2">
-          <button type="submit" class="btn btn-primary">
-            {{ isEditing ? 'Update' : 'Save' }}
-          </button>
-          <button type="button" class="btn btn-secondary" (click)="cancelForm()">Cancel</button>
-        </div>
-      </form>
-    </div>
-  </div>
+<div class="d-flex">
+  <div class="content p-4 w-100">
+    <h2 class="mb-4">Manage Books</h2>
+    
+    <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+    
+    <button *ngIf="!showForm" class="btn btn-success mb-3" (click)="openAddForm()">Add New Book</button>
+    
+    <!-- Book Form -->
+    <div *ngIf="showForm" class="card mb-4">
+      <div class="card-header">
+        {{ isEditing ? 'Edit Book' : 'Add New Book' }}
+      </div>
+      <div class="card-body">
+        <form (submit)="saveBook()">
+          <div class="mb-3">
+            <label for="bookTitle" class="form-label">Title*</label>
+            <input
+              type="text"
+              class="form-control"
+              id="bookTitle"
+              [(ngModel)]="bookTitle"
+              name="bookTitle"
+              required
+            />
+          </div>
 
-  <!-- Loading Spinner -->
-  <div *ngIf="isLoading" class="text-center my-5">
-    <div class="spinner-border" role="status">
-      <span class="visually-hidden">Loading...</span>
-    </div>
-  </div>
+          <div class="mb-3">
+            <label for="bookAuthors" class="form-label">Authors</label>
+            <input
+              type="text"
+              class="form-control"
+              id="bookAuthors"
+              [(ngModel)]="bookAuthors"
+              name="bookAuthors"
+              placeholder="Comma-separated list of authors"
+            />
+            <small class="text-muted">Separate multiple authors with commas</small>
+          </div>
 
-  <!-- Books Table -->
-  <table *ngIf="!isLoading && books.length > 0" class="table table-striped table-hover">
-    <thead class="table-dark">
-      <tr>
-        <th>Title</th>
-        <th>Price</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let book of books">
-        <td>{{ book.title }}</td>
-        <td>${{ book.price }}</td>
-        <td>
-          <button class="btn btn-warning btn-sm me-2" (click)="openEditForm(book)">Edit</button>
-          <button class="btn btn-danger btn-sm" (click)="deleteBook(book._id)">Delete</button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-  
-  <!-- No Books Message -->
-  <div *ngIf="!isLoading && books.length === 0" class="alert alert-info">
-    No books found. Add a new book to get started.
+          <div class="mb-3">
+            <label for="bookPrice" class="form-label">Price*</label>
+            <input
+              type="number"
+              class="form-control"
+              id="bookPrice"
+              [(ngModel)]="bookPrice"
+              name="bookPrice"
+              min="1"
+              required
+            />
+          </div>
+
+          <div class="mb-3">
+            <label for="bookDescription" class="form-label">Description</label>
+            <textarea
+              class="form-control"
+              id="bookDescription"
+              [(ngModel)]="bookDescription"
+              name="bookDescription"
+              rows="3"
+            ></textarea>
+          </div>
+
+          <div class="mb-3">
+            <label for="bookStock" class="form-label">Stock</label>
+            <input
+              type="number"
+              class="form-control"
+              id="bookStock"
+              [(ngModel)]="bookStock"
+              name="bookStock"
+              min="0"
+            />
+          </div>
+
+          <div class="mb-3">
+            <label for="bookCover" class="form-label">Book Cover</label>
+            <input
+              type="file"
+              class="form-control"
+              id="bookCover"
+              (change)="onFileSelected($event)"
+              accept="image/jpeg,image/png,image/jpg"
+            />
+            <small class="text-muted">Supported formats: JPG, JPEG, PNG</small>
+          </div>
+
+          <!-- Preview current image when editing -->
+          <div *ngIf="bookImageUrl" class="mb-3">
+            <label class="form-label">Current Cover</label>
+            <div>
+              <img [src]="bookImageUrl" alt="Book cover" style="max-height: 150px; max-width: 100px; object-fit: cover;" class="border" />
+            </div>
+          </div>
+
+          <!-- Show upload progress -->
+          <div *ngIf="uploadProgress !== null" class="mb-3">
+            <div class="progress">
+              <div class="progress-bar" role="progressbar" [style.width.%]="uploadProgress" 
+                   [attr.aria-valuenow]="uploadProgress" aria-valuemin="0" aria-valuemax="100">
+                {{ uploadProgress }}%
+              </div>
+            </div>
+          </div>
+
+          <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-primary" [disabled]="isLoading">
+              <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+              {{ isEditing ? 'Update' : 'Save' }}
+            </button>
+            <button type="button" class="btn btn-secondary" (click)="cancelForm()" [disabled]="isLoading">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Loading Spinner -->
+    <div *ngIf="isLoading && !showForm" class="text-center my-5">
+      <div class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+
+    <!-- Books Table -->
+    <table *ngIf="!isLoading && books.length > 0" class="table table-striped table-hover">
+      <thead class="table-dark">
+        <tr>
+          <th>Cover</th>
+          <th>Title</th>
+          <th>Authors</th>
+          <th>Price</th>
+          <th>Stock</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let book of books">
+          <td>
+            <img *ngIf="book.img" [src]="book.img" alt="Book cover" style="height: 50px; width: 35px; object-fit: cover;" class="border" />
+            <span *ngIf="!book.img" class="badge bg-secondary">No image</span>
+          </td>
+          <td>{{ book.title }}</td>
+          <td>{{ book.authors ? book.authors.join(', ') : 'N/A' }}</td>
+          <td>${{ book.price }}</td>
+          <td>{{ book.stock || 0 }}</td>
+          <td>
+            <button class="btn btn-warning btn-sm me-2" (click)="openEditForm(book)">Edit</button>
+            <button class="btn btn-danger btn-sm" (click)="deleteBook(book._id)">Delete</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    
+    <div *ngIf="!isLoading && books.length === 0" class="alert alert-info">
+      No books found. Add a new book to get started.
+    </div>
   </div>
 </div>
+

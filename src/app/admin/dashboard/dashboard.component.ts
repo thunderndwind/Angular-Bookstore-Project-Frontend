@@ -1,14 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterOutlet } from '@angular/router';
-import { AdminSidebarComponent } from '../admin-sidebar/admin-sidebar.component';
 import { AdminService } from '../../services/admin.service';
 
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
   templateUrl: './dashboard.component.html',
-  imports: [RouterOutlet, AdminSidebarComponent, CommonModule],
+  imports: [CommonModule],
   styleUrls: ['./dashboard.component.css']
 })
 export class AdminDashboardComponent implements OnInit {
@@ -36,8 +34,4 @@ export class AdminDashboardComponent implements OnInit {
       }
     });
   }
-
-  toggleTheme() {
-    document.body.classList.toggle('dark-mode');
-  }  
 }

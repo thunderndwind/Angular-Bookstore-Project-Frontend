@@ -34,8 +34,7 @@ export class LoginComponent {
       console.log('Login response:', res);
   
       if (res.accessToken && res.refreshToken) {
-        console.log('Tokens received. Redirecting to home...'); // Debug: Log redirection
-        this.router.navigate(['/']); // Redirect to home page
+        this.router.navigate(['/']);
       } else {
         this.errorMessage = res.message || 'Invalid credentials';
       }
