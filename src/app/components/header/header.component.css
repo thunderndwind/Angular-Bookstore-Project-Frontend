@@ -1,0 +1,17 @@
+.masthead {
+  height: 100vh;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.4)),
+    url("/assets/img/new-background.jpg") center/cover no-repeat;
+  opacity: 1;
+  transition: opacity 1.5s ease-in-out;
+  position: relative;
+}
+
+.masthead::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 100px; /* Adjust for smoother transition */
+  /*background: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(255, 255, 255, 1));*/
+}
