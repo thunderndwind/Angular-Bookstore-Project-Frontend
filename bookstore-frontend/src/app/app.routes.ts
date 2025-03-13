@@ -16,9 +16,10 @@ export const routes: Routes = [
         title: 'User Profile',
     },
     {
-        path: 'order/order-history/:id',
+        path: 'order/user/:id',
         component: OrderHistoryComponent,
         title: 'Order History',
     }
+
     
 ];
