@@ -19,7 +19,13 @@ export const routes: Routes = [
         path: 'order/user/:id',
         component: OrderHistoryComponent,
         title: 'Order History',
+    },
+    { path: 'notifications',
+        children: [
+            { path: 'user/:userId', component: NotificationComponent },
+            { path: 'user/:userId/unread-count', component: NotificationComponent },
+            { path: '**', component: NotificationComponent }
+        ]
     }
 
-    
 ];
