@@ -3,7 +3,7 @@ import { HttpHandlerFn, HttpInterceptorFn, HttpRequest, HttpErrorResponse } from
 import { inject } from '@angular/core';
 import { catchError, filter, switchMap, take, throwError } from 'rxjs';
 import { BehaviorSubject, from, Observable } from 'rxjs';
-import { AuthService } from '../services/auth.service';
+import { AuthService } from '../services/auth/auth.service';
 
 // Use a closure to manage the refreshing state
 let isRefreshing = false;
