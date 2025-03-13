@@ -15,12 +15,14 @@
     border-color: #4a4a4a;
   }
   
-  .btn-danger {
+  .danger-btn {
     background-color: #dc3545;
     border-color: #dc3545;
+    color: #ffffff;
   }
   
-  .btn-success {
+  .success-btn {
     background-color: #283ba7;
     border-color: #283ba7;
+    color: #ffffff;
   }
