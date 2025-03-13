@@ -1,0 +1,77 @@
+.footer {
+    background-color: #f8f9fa;
+    padding: 60px 0 30px;
+    margin-top: 60px;
+    border-top: 1px solid #e9ecef;
+  }
+  
+  .footer h5 {
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+  }
+  
+  .footer-links {
+    padding-left: 0;
+    list-style: none;
+  }
+  
+  .footer-links li {
+    margin-bottom: 10px;
+  }
+  
+  .footer-links a {
+    color: #6c757d;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  
+  .footer-links a:hover {
+    color: var(--primary-color);
+    text-decoration: underline;
+  }
+  
+  address {
+    color: #6c757d;
+    line-height: 1.8;
+  }
+  
+  address a {
+    color: #6c757d;
+    text-decoration: none;
+  }
+  
+  address a:hover {
+    color: var(--primary-color);
+    text-decoration: underline;
+  }
+  
+  .copyright {
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid #e9ecef;
+    color: #6c757d;
+    font-size: 0.85rem;
+  }
+  
+  /* Dark mode styles */
+  :host-context(.dark-mode) .footer {
+    background-color: #222;
+    border-top-color: #333;
+  }
+  
+  :host-context(.dark-mode) .footer h5 {
+    color: var(--secondary-color);
+  }
+  
+  :host-context(.dark-mode) .footer-links a,
+  :host-context(.dark-mode) address,
+  :host-context(.dark-mode) address a,
+  :host-context(.dark-mode) .copyright {
+    color: #ccc;
+  }
+  
+  :host-context(.dark-mode) .footer-links a:hover,
+  :host-context(.dark-mode) address a:hover {
+    color: var(--secondary-color);
+  }

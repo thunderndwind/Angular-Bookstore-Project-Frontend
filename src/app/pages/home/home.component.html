@@ -1,0 +1,49 @@
+<div class="container">
+    <!-- Search Section -->
+    <div class="search-section">
+      <div class="search-container">
+        <input type="text" placeholder="Search books..." class="search-input">
+        <button class="search-button">Search</button>
+      </div>
+    </div>
+  
+    <!-- Loading and Error States -->
+    <div *ngIf="loading" class="loading-container">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+  
+    <div *ngIf="error" class="alert alert-danger">
+      {{ error }}
+    </div>
+  
+    <!-- Featured Books Section -->
+    <section class="featured-books">
+      <h2 class="section-title">Featured Books</h2>
+      <div class="row book-row">
+        <div *ngFor="let book of featuredBooks" class="col-md-4 col-sm-6 mb-4">
+          <app-book-card [book]="book"></app-book-card>
+        </div>
+        <div *ngIf="featuredBooks.length === 0 && !loading" class="no-books">
+          No featured books available at this time.
+        </div>
+      </div>
+    </section>
+  
+    <!-- New Arrivals Section -->
+    <section class="new-arrivals">
+      <h2 class="section-title">New Arrivals</h2>
+      <div class="row book-row">
+        <div *ngFor="let book of newArrivals" class="col-md-4 col-sm-6 mb-4">
+          <app-book-card [book]="book"></app-book-card>
+        </div>
+        <div *ngIf="newArrivals.length === 0 && !loading" class="no-books">
+          No new arrivals available at this time.
+        </div>
+      </div>
+    </section>
+  
+    <!-- Pagination -->
+    <app-pagination></app-pagination>
+  </div>

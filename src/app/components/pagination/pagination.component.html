@@ -1,17 +1,46 @@
-<nav aria-label="Page navigation example">
-    <ul class="pagination justify-content-center">
-      <li class="page-item">
-        <a class="page-link" href="#" aria-label="Previous">
-          <span aria-hidden="true">&laquo;</span>
-        </a>
-      </li>
-      <li class="page-item"><a class="page-link" href="#">1</a></li>
-      <li class="page-item"><a class="page-link" href="#">2</a></li>
-      <li class="page-item"><a class="page-link" href="#">3</a></li>
-      <li class="page-item">
-        <a class="page-link" href="#" aria-label="Next">
-          <span aria-hidden="true">&raquo;</span>
-        </a>
-      </li>
-    </ul>
-  </nav>
+<nav *ngIf="totalPages > 1" aria-label="Book pagination">
+  <ul class="pagination justify-content-center">
+    <!-- Previous button -->
+    <li class="page-item" [class.disabled]="currentPage === 1">
+      <a class="page-link" (click)="changePage(currentPage - 1)" aria-label="Previous">
+        <span aria-hidden="true">&laquo;</span>
+      </a>
+    </li>
+    
+    <!-- First page (if not in view) -->
+    <li *ngIf="pages[0] > 1" class="page-item">
+      <a class="page-link" (click)="changePage(1)">1</a>
+    </li>
+    
+    <!-- Ellipsis if needed -->
+    <li *ngIf="pages[0] > 2" class="page-item disabled">
+      <a class="page-link">...</a>
+    </li>
+    
+    <!-- Page numbers -->
+    <li *ngFor="let page of pages" class="page-item" [class.active]="page === currentPage">
+      <a class="page-link" (click)="changePage(page)">{{ page }}</a>
+    </li>
+    
+    <!-- Ellipsis if needed -->
+    <li *ngIf="pages[pages.length - 1] < totalPages - 1" class="page-item disabled">
+      <a class="page-link">...</a>
+    </li>
+    
+    <!-- Last page (if not in view) -->
+    <li *ngIf="pages[pages.length - 1] < totalPages" class="page-item">
+      <a class="page-link" (click)="changePage(totalPages)">{{ totalPages }}</a>
+    </li>
+    
+    <!-- Next button -->
+    <li class="page-item" [class.disabled]="currentPage === totalPages">
+      <a class="page-link" (click)="changePage(currentPage + 1)" aria-label="Next">
+        <span aria-hidden="true">&raquo;</span>
+      </a>
+    </li>
+  </ul>
+  
+  <div class="pagination-info text-center mt-2">
+    Showing {{ (currentPage - 1) * itemsPerPage + 1 }} to {{ Math.min(currentPage * itemsPerPage, totalItems) }} of {{ totalItems }} items
+  </div>
+</nav>

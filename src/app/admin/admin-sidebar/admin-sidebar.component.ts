@@ -13,10 +13,10 @@ export class AdminSidebarComponent {
   constructor(
     private router: Router,
     private authService: AuthService
-  ) { }
+  ) {}
 
   logout(): void {
     this.authService.logout();
-    this.router.navigate(['/login']);
+     this.router.navigate(['/login']);
   }
 }

@@ -1,10 +1,13 @@
-
 <div class="book-card">
-  <img [src]="book.image" alt="Book Cover" class="book-image">
+  <img [src]="book.image || 'assets/images/placeholder-book.jpg'" alt="Book Cover: {{book.title}}" class="book-image">
   <div class="book-details">
-    <h2>{{ book.title }}</h2>
-    <p class="price">${{ book.price }}</p>
-    <p class="description">{{ book.description }}</p>
-    <button class="hover-button">View Details</button>
+    <h3 class="book-title">{{ book.title }}</h3>
+    <p class="book-author">by {{ book.author }}</p>
+    <p class="price">${{ book.price | number:'1.2-2' }}</p>
+    <p class="description">{{ book.description | slice:0:100 }}{{ book.description.length > 100 ? '...' : '' }}</p>
+    <div class="button-group">
+      <button class="view-button" (click)="viewBookDetails()">View Details</button>
+      <button class="cart-button" (click)="addToCart()">Add to Cart</button>
+    </div>
   </div>
 </div>

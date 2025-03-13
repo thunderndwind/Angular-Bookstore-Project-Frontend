@@ -14,54 +14,48 @@ import { ManageUsersComponent } from './admin/manage-users/manage-users.componen
 import { UserMonitoringComponent } from './admin/user-monitoring/user-monitoring.component';
 import { SystemHealthComponent } from './admin/system-health/system-health.component';
 import { AdminNotificationsComponent } from './admin/admin-notifications/admin-notifications.component';
-import { AppComponent } from './app.component';
 import { AdminLayoutComponent } from './admin/admin-layout/admin-layout.component';
 import { ForbiddenComponent } from './pages/forbidden/forbidden.component';
 import { NotificationComponent } from './pages/notification/notification.component';
-
+import { MainLayoutComponent } from './pages/main-layout/main-layout.component';
+//import { ManageOrdersComponent } from './admin/manage-orders/manage-orders.component';
 
 export const routes: Routes = [
-    { path: '', redirectTo: 'home', pathMatch: 'full' },
-    { path: 'home', component: HomeComponent },
+    {
+        path: '',
+        component: MainLayoutComponent,
+        children: [
+            { path: '', redirectTo: 'home', pathMatch: 'full' },
+            { path: 'home', component: HomeComponent },
+            { path: 'cart', component: CartComponent },
+            { path: 'user/:id', component: UserProfileComponent, title: 'User Profile',},
+            { path: 'order/user/:id',component: OrderHistoryComponent,title: 'Order History',},
+            { path: 'notifications',
+                children: [
+                    { path: 'user/:userId', component: NotificationComponent },
+                    { path: 'user/:userId/unread-count', component: NotificationComponent },
+                    { path: '**', component: NotificationComponent }
+                ]
+            },
+        ]
+    },
     { path: 'login', component: LoginComponent },
     { path: 'register', component: RegisterComponent },
     { path: 'forbidden', component: ForbiddenComponent },
     {
-        path: 'admin', component: AdminLayoutComponent,
+        path: 'admin',
+        component: AdminLayoutComponent,
         canActivate: [adminGuard],
         children: [
-            { path: '', redirectTo: '/admin/dashboard', pathMatch: 'full' },
+            { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
             { path: 'dashboard', component: AdminDashboardComponent },
             { path: 'users', component: ManageUsersComponent },
             { path: 'books', component: ManageBooksComponent },
             { path: 'monitoring', component: UserMonitoringComponent },
             { path: 'system-health', component: SystemHealthComponent },
             { path: 'notifications', component: AdminNotificationsComponent },
+            //{ path: 'orders', component: ManageOrdersComponent },
         ]
     },
-    {
-        path: '',
-        component: AppComponent,
-        title: 'Home',
-    },
-    {
-        path: 'user/:id',
-        component: UserProfileComponent,
-        title: 'User Profile',
-    },
-    {
-        path: 'order/user/:id',
-        component: OrderHistoryComponent,
-        title: 'Order History',
-    },
-    {
-        path: 'notifications',
-        children: [
-            { path: 'user/:userId', component: NotificationComponent },
-            { path: 'user/:userId/unread-count', component: NotificationComponent },
-            { path: '**', component: NotificationComponent }
-        ]
-    },
-    { path: 'cart', component: CartComponent },
     { path: '**', component: NotFoundComponent }
 ];
