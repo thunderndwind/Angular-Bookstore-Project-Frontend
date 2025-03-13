@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NotificationService } from '../services/notification/notification.service';
+import { NotificationService } from '../../services/notification/notification.service';
 import { PageEvent } from '@angular/material/paginator';
 import { ActivatedRoute } from '@angular/router';
 import { MatPaginatorModule } from '@angular/material/paginator';
@@ -9,7 +9,7 @@ import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-notification',
-  imports: [MatPaginatorModule,CommonModule],
+  imports: [MatPaginatorModule, CommonModule],
   templateUrl: './notification.component.html',
   styleUrl: './notification.component.css'
 })
@@ -20,10 +20,10 @@ export class NotificationComponent implements OnInit {
   currentPage = 1;
   unreadCount = 0;
 
-  constructor(private notificationService: NotificationService, private route: ActivatedRoute) {}
+  constructor(private notificationService: NotificationService, private route: ActivatedRoute) { }
 
   ngOnInit(): void {
-     this.loadNotifications();
+    this.loadNotifications();
     this.loadUnreadCount();
     this.notificationService.notifications$.subscribe((notifications: any[]) => {
       this.notifications = notifications;
@@ -31,23 +31,23 @@ export class NotificationComponent implements OnInit {
   }
   loadNotifications(): void {
     const userId = this.route.snapshot.paramMap.get('userId');
-    if(!userId){
+    if (!userId) {
       console.error('User ID is null');
       return;
     }
     console.log(userId);
     this.notificationService
-    .getNotifications(this.currentPage, this.pageSize,userId)
-    .subscribe((response: any) => {
-      this.notificationService.updateNotifications(response.notifications);
-      this.totalNotifications = response.totalNotifications;
-    });
+      .getNotifications(this.currentPage, this.pageSize, userId)
+      .subscribe((response: any) => {
+        this.notificationService.updateNotifications(response.notifications);
+        this.totalNotifications = response.totalNotifications;
+      });
   }
 
 
   loadUnreadCount(): void {
     const userId = this.route.snapshot.paramMap.get('userId');
-    if(!userId){
+    if (!userId) {
       console.error('User ID is null');
       return;
     }
@@ -74,9 +74,9 @@ export class NotificationComponent implements OnInit {
     });
   }
 
-    markAllAsRead(): void {
+  markAllAsRead(): void {
     const userId = this.route.snapshot.paramMap.get('userId');
-    if(!userId){
+    if (!userId) {
       console.error('User ID is null');
       return;
     }
@@ -99,7 +99,7 @@ export class NotificationComponent implements OnInit {
 
   deleteAllNotifications(): void {
     const userId = this.route.snapshot.paramMap.get('userId');
-    if(!userId){
+    if (!userId) {
       console.error('User ID is null');
       return;
     }

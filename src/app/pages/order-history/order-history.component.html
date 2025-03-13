@@ -1,38 +1,67 @@
 <div class="container mt-5">
-    <h2 class="text-center mb-4" style="color: #032c69;">Your Orders</h2>
+    <h2 class="text-center mb-4" style="color: #2c2c2c;">Your Orders</h2>
     @if (orders.length > 0) {
-        <div class = "card shadow-lg mb-4">
-            <div class="card-body" style="background-color: #f0f0f0;">
-                @for (order of orders; track $index) {
-                    <div class="mb-4 p-3 border rounded" style="background-color: #fbfbfb;">
-                        <p class="card-text"><strong>Total Price:</strong> ${{ order.total_price }}</p>
-                        <p class="card-text"><strong>Payment Method:</strong> {{ order.payment_method }}</p>
-                        <p class="card-text"><strong>Order Date:</strong> {{ order.createdAt?.split('T')[0] }}</p>
-                        <h5  style="color: #032c69;">Books Ordered:</h5>
-                        <div class="row">
-                            @for (book of order.books; track $index) {
-                                <div class="col-md-3 mb-3">
-                                    <div class="card h-120"style="padding: 10px;">
-                                        <img [src]="book.img" class="card-img-top" [alt]="book.title" style="height: 350px;">
-                                        <h5 class="card-title">{{ book.title }}</h5>
-                                        <p class="card-text">{{ book.description }}</p>
-                                        <p class="card-text"><strong>Price:</strong> ${{ book.price }}</p>
-                                        <p class="card-text"><strong>Authors:</strong> {{ book.authors?.join(', ') || 'No authors available' }}</p>
-                                
-                                    </div>
-                                </div>
-                            }
+    <div class="card shadow-lg mb-4">
+        <div class="card-body" style="background-color: #f0f0f0;">
+            @for (order of orders; track $index) {
+            <div class="mb-4 p-3 border rounded"
+                style="background-color: #fbfbfb;">
+                <p class="card-text"><strong>Total Price:</strong> ${{
+                    order.total_price }}</p>
+                <p class="card-text"><strong>Payment Method:</strong> {{
+                    order.payment_method }}</p>
+                <p class="card-text"><strong>Order Date:</strong> {{
+                    order.createdAt?.split('T')[0] }}</p>
+                <h5 style="color: #2c2c2c;">Books Ordered:</h5>
+                <div class="row">
+                    @for (book of order.books; track $index) {
+                    <div class="col-md-3 mb-3">
+                        <div class="card shadow-sm h-120"
+                            style="padding: 10px;">
+                            <img [src]="book.img" class="card-img-top"
+                                [alt]="book.title" style="height: 350px;">
+                            <h5 class="card-title">{{ book.title }}</h5>
+                            <p class="card-text">{{ book.description }}</p>
+                            <p class="card-text"><strong>Price:</strong> ${{
+                                book.price }}</p>
+                            <p class="card-text"><strong>Authors:</strong> {{
+                                book.authors?.join(', ') ||
+                                'No authors available' }}</p>
                         </div>
-
-
                     </div>
-                }
+                    }
+                </div>
             </div>
+            }
         </div>
-    }
-    @else {
-        <div class="alert alert-info text-center" role="alert">
-          No orders found.
-        </div>
+    </div>
+
+    <!--pagination controls-->
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            <li class="page-item" [class.disabled]="currentPage === 1">
+                <a class="page-link" (click)="onPageChange(currentPage - 1)"
+                    aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            @for (page of [].constructor(totalPages); track $index) {
+            <li class="page-item" [class.active]="currentPage === $index + 1">
+                <a class="page-link" (click)="onPageChange($index + 1)">{{
+                    $index + 1 }}</a>
+            </li>
+            }
+            <li class="page-item" [class.disabled]="currentPage === totalPages">
+                <a class="page-link" (click)="onPageChange(currentPage + 1)"
+                    aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    } @else {
+    <div class="alert alert-info text-center" role="alert">
+        No orders found.
+    </div>
     }
 </div>

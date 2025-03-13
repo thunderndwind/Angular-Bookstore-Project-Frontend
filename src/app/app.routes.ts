@@ -17,6 +17,7 @@ import { AdminNotificationsComponent } from './admin/admin-notifications/admin-n
 import { AppComponent } from './app.component';
 import { AdminLayoutComponent } from './admin/admin-layout/admin-layout.component';
 import { ForbiddenComponent } from './pages/forbidden/forbidden.component';
+import { NotificationComponent } from './pages/notification/notification.component';
 
 
 export const routes: Routes = [

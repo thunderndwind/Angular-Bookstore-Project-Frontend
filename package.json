@@ -28,6 +28,7 @@
     "ngx-wow": "^2.0.1",
     "popper.js": "^1.16.1",
     "rxjs": "~7.8.0",
+    "socket.io-client": "^4.8.1",
     "tailwindcss": "^4.0.12",
     "tslib": "^2.3.0",
     "wow.js": "^1.2.2",
