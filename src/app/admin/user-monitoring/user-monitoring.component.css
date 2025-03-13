@@ -1,0 +1,45 @@
+.table-responsive {
+  overflow-x: auto;
+}
+
+.card {
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  margin-bottom: 1.5rem;
+}
+
+.badge {
+  font-weight: 500;
+}
+
+.list-group-item {
+  padding: 0.5rem 1rem;
+}
+
+.text-success {
+  color: #198754 !important;
+}
+
+.text-warning {
+  color: #ffc107 !important;
+}
+
+.text-danger {
+  color: #dc3545 !important;
+}
+
+.text-secondary {
+  color: #6c757d !important;
+}
+
+.pagination {
+  margin-bottom: 0;
+}
+
+.form-check-input:checked {
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+}
+
+.btn-close:focus {
+  box-shadow: none;
+}

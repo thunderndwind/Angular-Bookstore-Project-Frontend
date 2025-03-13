@@ -1,0 +1,182 @@
+<div class="container-fluid">
+    <h2 class="mb-4">User Monitoring</h2>
+
+    <!-- Error Alert -->
+    <div *ngIf="error" class="alert alert-danger alert-dismissible fade show" role="alert">
+        {{ error }}
+        <button type="button" class="btn-close" (click)="error = null" aria-label="Close"></button>
+    </div>
+
+    <!-- Controls -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="autoRefresh" [(ngModel)]="autoRefresh"
+                    (change)="toggleAutoRefresh()">
+                <label class="form-check-label" for="autoRefresh">Auto-refresh (every 30 seconds)</label>
+            </div>
+        </div>
+        <div class="col-md-6 text-end">
+            <div class="form-check form-switch d-inline-block me-3">
+                <input class="form-check-input" type="checkbox" id="detailed" [(ngModel)]="detailed"
+                    (change)="loadOnlineUsers()">
+                <label class="form-check-label" for="detailed">Detailed view</label>
+            </div>
+            <button class="btn btn-primary" (click)="loadOnlineUsers()" [disabled]="isLoading">
+                <i class="bi bi-arrow-clockwise me-1"></i>
+                Refresh
+            </button>
+        </div>
+    </div>
+
+    <!-- Loading Spinner -->
+    <div *ngIf="isLoading" class="text-center my-5">
+        <div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+
+    <!-- User Details Modal -->
+    <div *ngIf="selectedUser" class="card mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">User Details: {{ selectedUser.name }}</h5>
+            <button type="button" class="btn-close" (click)="closeUserDetails()"></button>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <h6>User Information</h6>
+                    <p><strong>Email:</strong> {{ selectedUser.email }}</p>
+                    <p><strong>Role:</strong> <span class="badge bg-info">{{ selectedUser.role }}</span></p>
+                    <p>
+                        <strong>Status:</strong>
+                        <span [class]="getStatusClass(selectedUser.status)">
+                            {{ selectedUser.status }}
+                        </span>
+                    </p>
+                    <p><strong>Active Connections:</strong> {{ selectedUser.connections }}</p>
+                    <p *ngIf="selectedUser.lastActive">
+                        <strong>Last Active:</strong> {{ formatDate(selectedUser.lastActive) }}
+                    </p>
+
+                    <button class="btn btn-danger" (click)="disconnectAllSessions(selectedUser.userId)">
+                        Disconnect All Sessions
+                    </button>
+                </div>
+
+                <div class="col-md-6">
+                    <h6>Active Connections</h6>
+                    <div class="table-responsive">
+                        <table class="table table-sm table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Device</th>
+                                    <th>Connected At</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let conn of userConnections">
+                                    <td>{{ conn.device }}</td>
+                                    <td>{{ formatDate(conn.connectedAt) }}</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-danger"
+                                            (click)="disconnectUser(selectedUser.userId, conn.socketId)">
+                                            Disconnect
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr *ngIf="userConnections.length === 0">
+                                    <td colspan="3" class="text-center">No active connections</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h6 class="mt-4">Activity History</h6>
+                    <div *ngIf="userHistory">
+                        <ul class="list-group">
+                            <li *ngFor="let activity of userHistory.history" class="list-group-item">
+                                <div><strong>{{ activity.action }}</strong></div>
+                                <small class="text-muted">{{ formatDate(activity.timestamp) }}</small>
+                                <div *ngIf="activity.details">{{ activity.details }}</div>
+                            </li>
+                            <li *ngIf="userHistory.history?.length === 0" class="list-group-item text-center">
+                                No activity history available
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Online Users Table -->
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">Online Users</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Status</th>
+                            <th>Connections</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let user of onlineUsers">
+                            <td>{{ user.name }}</td>
+                            <td>{{ user.email }}</td>
+                            <td><span class="badge bg-info">{{ user.role }}</span></td>
+                            <td>
+                                <span [class]="getStatusClass(user.status)">
+                                    {{ user.status }}
+                                </span>
+                            </td>
+                            <td>{{ user.connections }}</td>
+                            <td>
+                                <button class="btn btn-sm btn-primary me-2" (click)="viewUserDetails(user)">
+                                    View Details
+                                </button>
+                                <button class="btn btn-sm btn-danger" (click)="disconnectAllSessions(user.userId)">
+                                    Disconnect
+                                </button>
+                            </td>
+                        </tr>
+                        <tr *ngIf="onlineUsers.length === 0 && !isLoading">
+                            <td colspan="6" class="text-center">No online users found</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Pagination -->
+        <div class="card-footer">
+            <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-center mb-0">
+                    <li class="page-item" [class.disabled]="currentPage === 1">
+                        <a class="page-link" href="javascript:void(0)"
+                            (click)="changePage(currentPage - 1)">Previous</a>
+                    </li>
+
+                    <ng-container *ngFor="let page of [].constructor(totalPages); let i = index">
+                        <li class="page-item" [class.active]="currentPage === i + 1">
+                            <a class="page-link" href="javascript:void(0)" (click)="changePage(i + 1)">{{ i + 1 }}</a>
+                        </li>
+                    </ng-container>
+
+                    <li class="page-item" [class.disabled]="currentPage === totalPages">
+                        <a class="page-link" href="javascript:void(0)" (click)="changePage(currentPage + 1)">Next</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>

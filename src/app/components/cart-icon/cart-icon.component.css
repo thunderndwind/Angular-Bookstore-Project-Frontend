@@ -1,0 +1,27 @@
+.cart-icon-link {
+  color: inherit;
+  text-decoration: none;
+  display: inline-block;
+  transition: color 0.2s ease-in-out;
+  padding: 0.5rem;
+}
+
+.cart-icon-link:hover {
+  color: #0d6efd;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.badge {
+  animation: pulse 0.3s ease-in-out;
+}

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AdminService } from '../../services/admin.service';
+import { AdminService } from '../../services/admin/admin.service';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -14,7 +14,7 @@ export class AdminDashboardComponent implements OnInit {
   isLoading: boolean = true;
   error: string | null = null;
 
-  constructor(private adminService: AdminService) {}
+  constructor(private adminService: AdminService) { }
 
   ngOnInit() {
     this.loadDashboardData();

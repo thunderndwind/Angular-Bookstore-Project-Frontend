@@ -3,7 +3,7 @@ import { HttpHandlerFn, HttpInterceptorFn, HttpRequest, HttpErrorResponse } from
 import { inject } from '@angular/core';
 import { catchError, filter, switchMap, take, throwError } from 'rxjs';
 import { BehaviorSubject, from, Observable } from 'rxjs';
-import { AuthService } from '../services/auth.service';
+import { AuthService } from '../services/auth/auth.service';
 
 // Use a closure to manage the refreshing state
 let isRefreshing = false;
@@ -11,10 +11,10 @@ const refreshTokenSubject = new BehaviorSubject<string | null>(null);
 
 export const authInterceptor: HttpInterceptorFn = (req: HttpRequest<unknown>, next: HttpHandlerFn) => {
   const authService = inject(AuthService);
-  
+
   // Make sure we're accessing the methods correctly
   const token = authService.getAccessToken();
-  
+
   if (token) {
     req = addTokenToRequest(req, token);
   }
@@ -38,8 +38,8 @@ function addTokenToRequest(request: HttpRequest<unknown>, token: string): HttpRe
 }
 
 function handleUnauthorized(
-  request: HttpRequest<unknown>, 
-  next: HttpHandlerFn, 
+  request: HttpRequest<unknown>,
+  next: HttpHandlerFn,
   authService: AuthService
 ): Observable<any> {
   if (!isRefreshing) {
@@ -49,12 +49,12 @@ function handleUnauthorized(
     return from(authService.refreshAccessToken()).pipe(
       switchMap(token => {
         isRefreshing = false;
-        
+
         if (token) {
           refreshTokenSubject.next(token);
           return next(addTokenToRequest(request, token));
         }
-        
+
         // If token refresh fails, logout and redirect to login
         authService.logout();
         return throwError(() => 'Session expired. Please login again.');

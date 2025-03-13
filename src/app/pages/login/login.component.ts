@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from "@angular/forms";
 import { RouterLink, Router } from "@angular/router";
-import { AuthService } from "../../services/auth.service";
+import { AuthService } from "../../services/auth/auth.service";
 
 @Component({
   selector: 'app-login',
@@ -19,20 +19,20 @@ export class LoginComponent {
   constructor(
     private authService: AuthService,
     private router: Router
-  ) {}
+  ) { }
 
   async login() {
     this.errorMessage = '';
-  
+
     if (!this.email || !this.password) {
       this.errorMessage = 'Please enter both email and password';
       return;
     }
-  
+
     try {
       const res = await this.authService.login(this.email, this.password);
       console.log('Login response:', res);
-  
+
       if (res.accessToken && res.refreshToken) {
         this.router.navigate(['/']);
       } else {

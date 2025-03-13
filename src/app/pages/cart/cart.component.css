@@ -1,0 +1,42 @@
+.img-thumbnail {
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.table th, .table td {
+  vertical-align: middle;
+}
+
+.input-group-sm input {
+  font-size: 0.875rem;
+  padding: 0.25rem 0.5rem;
+}
+
+.card {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.card-body {
+  padding: 1.5rem;
+}
+
+.table-responsive {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.btn-outline-danger:hover svg {
+  fill: white;
+}
+
+@media (max-width: 768px) {
+  .table th, .table td {
+    padding: 0.5rem;
+  }
+  
+  .ps-4, .pe-4 {
+    padding-left: 0.75rem !important;
+    padding-right: 0.75rem !important;
+  }
+}

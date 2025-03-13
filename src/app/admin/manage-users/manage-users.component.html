@@ -1,0 +1,166 @@
+<div class="container-fluid">
+    <h2 class="mb-4">Manage Users</h2>
+
+    <!-- Alerts -->
+    @if (error) {
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        {{ error }}
+        <button type="button" class="btn-close" (click)="error = null"
+            aria-label="Close"></button>
+    </div>
+    }
+
+    @if (success) {
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{ success }}
+        <button type="button" class="btn-close" (click)="success = null"
+            aria-label="Close"></button>
+    </div>
+    }
+
+    <!-- Filters and Search -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6 mb-3 mb-md-0">
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="bi bi-search"></i>
+                        </span>
+                        <input type="text" class="form-control"
+                            placeholder="Search by name, email or username"
+                            [(ngModel)]="searchTerm"
+                            (input)="applyFilters()">
+                        @if (searchTerm) {
+                        <button class="btn btn-outline-secondary" type="button"
+                            (click)="searchTerm = ''; applyFilters()">
+                            <i class="bi bi-x"></i>
+                        </button>
+                        }
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <select class="form-select" [(ngModel)]="roleFilter"
+                        (change)="applyFilters()">
+                        <option value="all">All Roles</option>
+                        <option value="admin">Admin</option>
+                        <option value="user">User</option>
+                        <option value="moderator">Moderator</option>
+                    </select>
+                </div>
+                <div class="col-md-2 text-end">
+                    <button class="btn btn-primary w-100" (click)="loadUsers()"
+                        [disabled]="isLoading">
+                        <i class="bi bi-arrow-clockwise me-1"></i>
+                        Refresh
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Spinner -->
+    @if (isLoading) {
+    <div class="text-center my-5">
+        <div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+    }
+
+    <!-- Users Table -->
+    @if (!isLoading) {
+    <div class="card">
+        <div
+            class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Users</h5>
+            <span class="badge bg-primary">{{ filteredUsers.length }}
+                users</span>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Username</th>
+                            <th>Role</th>
+                            <th>Joined</th>
+                            <th>Last Active</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (user of filteredUsers; track user._id) {
+                        <tr>
+                            <td>{{ user.firstName }} {{ user.lastName }}</td>
+                            <td>{{ user.email }}</td>
+                            <td>{{ user.userName }}</td>
+                            <td>
+                                <span class="badge" [class]="{
+                                    'bg-danger': user.role === 'admin',
+                                    'bg-info': user.role === 'user',
+                                    'bg-warning': user.role === 'moderator'
+                                }">
+                                    {{ user.role }}
+                                </span>
+                            </td>
+                            <td>{{ formatDate(user.createdAt) }}</td>
+                            <td>{{ user.lastActive ? formatDate(user.lastActive)
+                                : 'Never' }}</td>
+                            <td>
+                                <span class="badge" [class]="{
+                                    'bg-success': user.status === 'online',
+                                    'bg-warning': user.status === 'away',
+                                    'bg-danger': user.status === 'busy',
+                                    'bg-secondary': user.status === 'offline' || !user.status
+                                }">
+                                    {{ user.status || 'offline' }}
+                                </span>
+                            </td>
+                            <td>
+                                <div class="btn-group">
+                                    <button
+                                        class="btn btn-sm btn-outline-primary"
+                                        [routerLink]="['/admin/users', user._id]">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                                    <button
+                                        class="btn btn-sm btn-outline-danger"
+                                        (click)="deleteUser(user._id)"
+                                        [disabled]="user.role === 'admin'">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        }
+                        @empty {
+                        <tr>
+                            <td colspan="8" class="text-center py-4">
+                                @if (searchTerm || roleFilter !== 'all') {
+                                <div>
+                                    No users match your search criteria
+                                    <button class="btn btn-link"
+                                        (click)="searchTerm = ''; roleFilter = 'all'; applyFilters()">
+                                        Clear filters
+                                    </button>
+                                </div>
+                                }
+                                @else {
+                                <div>
+                                    No users found in the system
+                                </div>
+                                }
+                            </td>
+                        </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    }
+</div>

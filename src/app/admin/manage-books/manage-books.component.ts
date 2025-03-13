@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AdminService } from '../../services/admin.service';
+import { AdminService } from '../../services/admin/admin.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -15,7 +15,7 @@ export class ManageBooksComponent implements OnInit {
   isLoading: boolean = false;
   error: string | null = null;
   uploadProgress: number | null = null;
-  
+
   // Form data
   showForm: boolean = false;
   isEditing: boolean = false;
@@ -28,7 +28,7 @@ export class ManageBooksComponent implements OnInit {
   selectedFile: File | null = null;
   bookImageUrl: string = '';
 
-  constructor(private adminService: AdminService) {}
+  constructor(private adminService: AdminService) { }
 
   ngOnInit() {
     this.loadBooks();
@@ -121,11 +121,11 @@ export class ManageBooksComponent implements OnInit {
         // Add new book
         await this.adminService.addBook(bookData).toPromise();
       }
-      
+
       this.loadBooks();
       this.showForm = false;
       this.resetForm();
-      
+
     } catch (err) {
       this.error = this.isEditing ? 'Failed to update book' : 'Failed to add book';
       console.error('Error saving book:', err);

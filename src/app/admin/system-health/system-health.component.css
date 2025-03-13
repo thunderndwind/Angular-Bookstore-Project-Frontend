@@ -1,0 +1,52 @@
+.card {
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.card-header {
+  background-color: rgba(0, 0, 0, 0.03);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+.progress {
+  height: 0.5rem;
+  border-radius: 0.25rem;
+}
+
+.display-4 {
+  font-size: 2.5rem;
+}
+
+.badge {
+  font-weight: 500;
+}
+
+.list-group-item {
+  padding: 0.5rem 1rem;
+  border-left: none;
+  border-right: none;
+}
+
+.bg-light {
+  background-color: #f8f9fa !important;
+}
+
+.text-primary {
+  color: #0d6efd !important;
+}
+
+.form-check-input:checked {
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+}
+
+.table th {
+  width: 40%;
+}
+
+@media (max-width: 768px) {
+  .display-4 {
+    font-size: 2rem;
+  }
+}
