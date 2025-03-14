@@ -18,6 +18,7 @@ import { AdminLayoutComponent } from './admin/admin-layout/admin-layout.componen
 import { ForbiddenComponent } from './pages/forbidden/forbidden.component';
 import { NotificationComponent } from './pages/notification/notification.component';
 import { MainLayoutComponent } from './pages/main-layout/main-layout.component';
+import { DetailsPageComponent } from './pages/details-page/details-page.component';
 //import { ManageOrdersComponent } from './admin/manage-orders/manage-orders.component';
 
 export const routes: Routes = [
@@ -42,6 +43,11 @@ export const routes: Routes = [
     { path: 'login', component: LoginComponent },
     { path: 'register', component: RegisterComponent },
     { path: 'forbidden', component: ForbiddenComponent },
+    {
+        path:'details/:id',
+        component: DetailsPageComponent,
+        title: 'Details Page'
+    },
     {
         path: 'admin',
         component: AdminLayoutComponent,
