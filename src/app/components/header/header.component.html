@@ -2,39 +2,44 @@
 <html lang="en">
     <body id="page-top">
         <!-- Navigation-->
-        <nav class="navbar navbar-expand-lg navbar-light fixed-top"
-            id="mainNav">
+        <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
             <div class="container px-4 px-lg-5">
-                <a class="navbar-brand" href="#page-top">Celeste</a>
-                <button class="navbar-toggler navbar-toggler-right"
-                    type="button" data-bs-toggle="collapse"
-                    data-bs-target="#navbarResponsive"
-                    aria-controls="navbarResponsive" aria-expanded="false"
-                    aria-label="Toggle navigation">
+                <a class="navbar-brand" href="/home">Celeste</a>
+                <button class="navbar-toggler navbar-toggler-right" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
                     Menu
                     <i class="fas fa-bars"></i>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarResponsive">
                     <ul class="navbar-nav ms-auto">
-                        <li class="nav-item"><a class="nav-link"
-                                href="#about">Shopping cart</a></li>
-                        <li class="nav-item"><a class="nav-link"
-                                href="#skills">Account</a></li>
+                        <!-- Dropdown Menu -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Menu
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item" href="/login">Login</a></li>
+                                <li><a class="dropdown-item" href="/register">Signup</a></li>
+                                <li><a class="dropdown-item" href="/notifications">Notifications</a></li>
+                                <li><a class="dropdown-item" href="/cart">Cart</a></li>
+                                <li><a class="dropdown-item" href="/order/user">Order History</a></li>
+                                <li><a class="dropdown-item" href="/user">Profile</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="/logout">Logout</a></li>
+                            </ul>
+                        </li>
                     </ul>
                 </div>
             </div>
         </nav>
         <!-- Masthead-->
         <header class="masthead">
-            <div
-                class="container px-4 px-lg-5 d-flex h-100 align-items-center justify-content-center">
+            <div class="container px-4 px-lg-5 d-flex h-100 align-items-center justify-content-center">
                 <div class="d-flex justify-content-center">
                     <div class="text-center">
-                        <h1 class="mx-auto my-0 text-uppercase "
-                            id="slogan">Where Stories Soar and Imagination Knows
-                            No Limits.</h1>
+                        <h1 class="mx-auto my-0 text-uppercase" id="slogan">Where Stories Soar and Imagination Knows No Limits.</h1>
                     </div>
                 </div>
             </div>
         </header>
     </body>
+</html>

@@ -45,12 +45,12 @@ export const routes: Routes = [
         title: 'Home',
     },
     {
-        path: 'user/:id',
+        path: 'user',
         component: UserProfileComponent,
         title: 'User Profile',
     },
     {
-        path: 'order/user/:id',
+        path: 'order/user',
         component: OrderHistoryComponent,
         title: 'Order History',
     },

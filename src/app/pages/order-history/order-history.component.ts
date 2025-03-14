@@ -27,7 +27,7 @@ export class OrderHistoryComponent implements OnInit {
   }
 
   loadOrders(userId: string, page: number, limit: number): void {
-    this.orderService.getUserOrders(userId, page, limit).subscribe((data) => {
+    this.orderService.getUserOrders( page, limit).subscribe((data) => {
       if (data) {
         this.orders = data.orders;
         this.totalItems = data.pagination.total;

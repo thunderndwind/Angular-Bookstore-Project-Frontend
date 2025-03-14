@@ -2,14 +2,19 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { jwtDecode } from 'jwt-decode';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
+  static getUserId() {
+    throw new Error('Method not implemented.');
+  }
   private apiUrl = 'http://localhost:5000';
   private accessTokenKey = 'access_token';
   private refreshTokenKey = 'refresh_token';
+
 
   constructor(private http: HttpClient, private router: Router) {}
 
@@ -80,6 +85,16 @@ export class AuthService {
   isLoggedIn(): boolean {
     return !!this.getAccessToken();
   }
+
+  getCurrentUserId(): string | null {
+    const token = localStorage.getItem('access_token'); // Retrieve the token from storage
+    if (token) {
+      const decodedToken: any = jwtDecode(token);
+      return decodedToken.userId; // Assuming the token contains a `userId` field
+    }
+    return null;
+  }
+
 
   async refreshAccessToken(): Promise<string | null> {
     const refreshToken = this.getRefreshToken();
