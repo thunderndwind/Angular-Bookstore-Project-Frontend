@@ -8,9 +8,6 @@ import { jwtDecode } from 'jwt-decode';
   providedIn: 'root',
 })
 export class AuthService {
-  static getUserId() {
-    throw new Error('Method not implemented.');
-  }
   private apiUrl = 'http://localhost:5000';
   private accessTokenKey = 'access_token';
   private refreshTokenKey = 'refresh_token';
@@ -32,6 +29,7 @@ export class AuthService {
 
     return data;
   }
+
 
   async register(user: any): Promise<any> {
       const response = await fetch(`${this.apiUrl}/signup`, {
