@@ -3,7 +3,6 @@ import { NotificationService } from '../../services/notification/notification.se
 import { PageEvent } from '@angular/material/paginator';
 import { ActivatedRoute } from '@angular/router';
 import { MatPaginatorModule } from '@angular/material/paginator';
-
 import { CommonModule } from '@angular/common';
 
 

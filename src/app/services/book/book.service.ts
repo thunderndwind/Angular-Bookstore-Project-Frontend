@@ -7,23 +7,20 @@ import { catchError } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class BookService {
-  private apiUrl = 'http://localhost:5000'; // Updated base URL
+  private apiUrl = 'http://localhost:5000';
 
   constructor(private http: HttpClient) { }
 
-  // Fetch books with pagination
   getBooks(page: number = 0, limit: number = 10): Observable<any> {
-    const url = `${this.apiUrl}/?page=${page}&limit=${limit}`; // Updated URL to match router
-    console.log('Fetching books from:', url);
+    const url = `${this.apiUrl}/?page=${page}&limit=${limit}`;
     return this.http.get<any>(url)
       .pipe(
         catchError(this.handleError('getBooks', { books: [], total: 0 }))
       );
   }
 
-  // Fetch a single book by ID
   getBookById(id: string): Observable<any> {
-    const url = `${this.apiUrl}/book/${id}`; // Updated URL to match router
+    const url = `${this.apiUrl}/book/${id}`;
     console.log('Fetching book by ID:', url);
     return this.http.get<any>(url)
       .pipe(
@@ -31,7 +28,6 @@ export class BookService {
       );
   }
 
-  // Handle errors gracefully
   private handleError<T>(operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {
       console.error(`${operation} failed: ${error.message}`);

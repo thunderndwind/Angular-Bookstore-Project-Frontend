@@ -37,14 +37,6 @@ export class BookCardComponent {
       return;
     }
     
-    // Optional: Check authentication first
-    if (!localStorage.getItem('token')) {
-      this.router.navigate(['/login'], { 
-        queryParams: { returnUrl: this.router.url } 
-      });
-      return;
-    }
-    
     this.addingToCart = true;
     this.cartService.addToCart(this.book._id, 1).subscribe({
       next: (response) => {

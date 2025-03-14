@@ -1,11 +1,10 @@
 <div class="main-content">
   <div class="container">
-    <!-- Search Section -->
     <div class="search-section">
-      <div class="search-container">
+      <!-- <div class="search-container">
         <input type="text" placeholder="Search books..." class="search-input">
         <button class="search-button">Search</button>
-      </div>
+      </div> -->
     </div>
 
     <!-- Loading and Error States -->
@@ -19,30 +18,36 @@
       {{ error }}
     </div>
 
-    <!-- Featured Books Section -->
-    <section class="featured-books">
-      <h2 class="section-title">Featured Books</h2>
-      <div class="row book-row">
-        <div *ngFor="let book of featuredBooks" class="col-md-4 col-sm-6 mb-4">
+  <!-- Featured Books Section -->
+  <section class="featured-books">
+    <h2 class="section-title">Featured Books</h2>
+    <div class="container">
+      <div class="row">
+        <div *ngFor="let book of featuredBooks" class="col-lg-4 col-md-6 col-sm-12 mb-4">
           <app-book-card [book]="book"></app-book-card>
         </div>
         <div *ngIf="featuredBooks.length === 0 && !loading" class="no-books">
           No featured books available at this time.
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- New Arrivals Section -->
-    <section class="new-arrivals">
-      <h2 class="section-title">New Arrivals</h2>
-      <div class="row book-row">
-        <div *ngFor="let book of newArrivals" class="col-md-4 col-sm-6 mb-4">
-          <app-book-card [book]="book"></app-book-card>
-        </div>
-        <div *ngIf="newArrivals.length === 0 && !loading" class="no-books">
-          No new arrivals available at this time.
-        </div>
+
+<!-- New Arrivals Section -->
+<section class="new-arrivals">
+  <h2 class="section-title">New Arrivals</h2>
+  <div class="container">
+    <div class="row">
+      <div *ngFor="let book of newArrivals" class="col-lg-4 col-md-6 col-sm-12 mb-4">
+        <app-book-card [book]="book"></app-book-card>
       </div>
-    </section>
+      <div *ngIf="newArrivals.length === 0 && !loading" class="no-books">
+        No new arrivals available at this time.
+      </div>
+    </div>
+  </div>
+</section>
+
   </div>
 </div>

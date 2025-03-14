@@ -74,10 +74,10 @@
 }
 
 .cart-button {
-  background-color: var(--primary-color);
-  color: white;
+  background-color: #152a66;
+  color: rgb(255, 255, 255);
 }
 
 .cart-button:hover {
-  background-color: #152a66;
+  background-color: #6776a1;
 }

@@ -1,6 +1,6 @@
 <div class="book-card">
   <!-- Updated to handle both img and image field names -->
-  <img [src]="book.img || book.image ||  book.images || 'assets/images/placeholder-book.jpg'" alt="Book Cover: {{book.title}}" class="book-image">
+  <img [src]="book.img || book.image ||  book.images" alt="Book Cover: {{book.title}}" class="book-image">
   <div class="book-details">
     <h3 class="book-title">{{ book.title }}</h3>
     <p class="price">${{ book.price | number:'1.2-2' }}</p>
