@@ -20,13 +20,10 @@ export class OrderHistoryComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    const userId = this.route.snapshot.paramMap.get('id');
-    if (userId) {
-      this.loadOrders(userId, this.currentPage, this.itemsPerPage);
-    }
+    this.loadOrders( this.currentPage, this.itemsPerPage);
   }
 
-  loadOrders(userId: string, page: number, limit: number): void {
+  loadOrders(page: number, limit: number): void {
     this.orderService.getUserOrders( page, limit).subscribe((data) => {
       if (data) {
         this.orders = data.orders;
@@ -38,9 +35,6 @@ export class OrderHistoryComponent implements OnInit {
 
   onPageChange(page: number): void {
     this.currentPage = page;
-    const userId = this.route.snapshot.paramMap.get('id');
-    if (userId) {
-      this.loadOrders(userId, this.currentPage, this.itemsPerPage);
-    }
+    this.loadOrders( this.currentPage, this.itemsPerPage);
   }
 }
