@@ -14,7 +14,9 @@ export class PaginationComponent {
   @Input() totalItems = 0;
   @Input() itemsPerPage = 10;
   @Output() pageChange = new EventEmitter<number>();
-Math: any;
+  
+  // Make Math available to the template
+  Math = Math;
 
   get pages(): number[] {
     const pagesArray = [];

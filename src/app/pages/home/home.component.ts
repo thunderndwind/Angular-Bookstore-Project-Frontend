@@ -2,21 +2,20 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { BookCardComponent } from '../../components/book-card/book-card.component';
-import { PaginationComponent } from '../../components/pagination/pagination.component';
-import { BookService, Book } from '../../services/book.service';
+import { BookService } from '../../services/book/book.service';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, FormsModule, BookCardComponent, PaginationComponent],
+  imports: [CommonModule, FormsModule, BookCardComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
 export class HomeComponent implements OnInit {
-  featuredBooks: Book[] = [];
-  newArrivals: Book[] = [];
-  loading = true;
-  error: string | null = null;
+  featuredBooks: any[] = []; // Array to store featured books
+  newArrivals: any[] = [];   // Array to store new arrivals
+  loading = true;            // Loading state
+  error: string | null = null; // Error message
 
   constructor(private bookService: BookService) {}
 
@@ -26,9 +25,9 @@ export class HomeComponent implements OnInit {
   }
 
   loadFeaturedBooks(): void {
-    this.bookService.getFeaturedBooks().subscribe({
-      next: (books) => {
-        this.featuredBooks = books;
+    this.bookService.getBooks(0, 6).subscribe({ // Fetch first 6 books as featured
+      next: (data) => {
+        this.featuredBooks = data.books;
         this.loading = false;
       },
       error: (err) => {
@@ -38,11 +37,11 @@ export class HomeComponent implements OnInit {
       }
     });
   }
-
+  
   loadNewArrivals(): void {
-    this.bookService.getNewArrivals().subscribe({
-      next: (books) => {
-        this.newArrivals = books;
+    this.bookService.getBooks(0, 6).subscribe({ // Fetch first 6 books as new arrivals
+      next: (data) => {
+        this.newArrivals = data.books;
         this.loading = false;
       },
       error: (err) => {

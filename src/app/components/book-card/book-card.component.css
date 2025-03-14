@@ -34,12 +34,6 @@
   color: var(--text-dark);
 }
 
-.book-author {
-  font-style: italic;
-  color: #666;
-  margin-bottom: 0.75rem;
-}
-
 .price {
   font-weight: 700;
   color: var(--primary-color);

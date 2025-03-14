@@ -1,10 +1,11 @@
 <div class="book-card">
-  <img [src]="book.image || 'assets/images/placeholder-book.jpg'" alt="Book Cover: {{book.title}}" class="book-image">
+  <!-- Updated to handle both img and image field names -->
+  <img [src]="book.img || book.image ||  book.images || 'assets/images/placeholder-book.jpg'" alt="Book Cover: {{book.title}}" class="book-image">
   <div class="book-details">
     <h3 class="book-title">{{ book.title }}</h3>
-    <p class="book-author">by {{ book.author }}</p>
     <p class="price">${{ book.price | number:'1.2-2' }}</p>
-    <p class="description">{{ book.description | slice:0:100 }}{{ book.description.length > 100 ? '...' : '' }}</p>
+    <!-- Add null check for description -->
+    <p class="description" *ngIf="book.description">{{ book.description | slice:0:100 }}{{ book.description.length > 100 ? '...' : '' }}</p>
     <div class="button-group">
       <button class="view-button" (click)="viewBookDetails()">View Details</button>
       <button class="cart-button" (click)="addToCart()">Add to Cart</button>

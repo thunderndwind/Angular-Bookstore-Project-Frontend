@@ -27,7 +27,6 @@ export const routes: Routes = [
         children: [
             { path: '', redirectTo: 'home', pathMatch: 'full' },
             { path: 'home', component: HomeComponent },
-            { path: 'cart', component: CartComponent },
             { path: 'user/:id', component: UserProfileComponent, title: 'User Profile',},
             { path: 'order/user/:id',component: OrderHistoryComponent,title: 'Order History',},
             { path: 'notifications',
@@ -41,6 +40,7 @@ export const routes: Routes = [
     },
     { path: 'login', component: LoginComponent },
     { path: 'register', component: RegisterComponent },
+    { path: 'cart', component: CartComponent, canActivate: [authGuard] },
     { path: 'forbidden', component: ForbiddenComponent },
     {
         path: 'admin',
