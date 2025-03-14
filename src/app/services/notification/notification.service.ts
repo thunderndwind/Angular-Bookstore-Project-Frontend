@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Socket, io } from 'socket.io-client';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
+import { CloseScrollStrategy } from '@angular/cdk/overlay';
 
 
 
@@ -10,7 +11,7 @@ import { AuthService } from '../auth/auth.service';
   providedIn: 'root'
 })
 export class NotificationService {
-  private apiUrl = 'http://localhost:5000'; //nodejs server
+  private apiUrl = 'http://localhost:5000';
   private socket: Socket;
   private notificationsSubject = new BehaviorSubject<any[]>([]);
   public notifications$ = this.notificationsSubject.asObservable();
@@ -37,7 +38,7 @@ export class NotificationService {
     const userId = this.authService.getCurrentUserId(); 
     return this.http.get(`${this.apiUrl}/notifications/user/${userId}`, {
       params: { page, limit },
-    });
+    });CloseScrollStrategy
   }
 
   markAsRead(notificationId: string): Observable<any> {

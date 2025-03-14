@@ -1,134 +1,126 @@
-import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 import { AdminService } from '../../services/admin/admin.service';
 
 @Component({
   selector: 'app-admin-notifications',
   standalone: true,
-  imports: [FormsModule],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './admin-notifications.component.html',
   styleUrls: ['./admin-notifications.component.css']
 })
-export class AdminNotificationsComponent {
-  onlineUsers: any[] = [];
-  selectedUsers: string[] = [];
-
-  notificationMessage: string = '';
-  notificationType: string = 'info';
+export class AdminNotificationsComponent implements OnInit {
+  userNotificationForm: FormGroup;
+  systemMessageForm: FormGroup;
 
   isLoading: boolean = false;
-  isSending: boolean = false;
   error: string | null = null;
   success: string | null = null;
 
-  constructor(private adminService: AdminService) { }
+  notificationTypes = ['order', 'stock', 'system', 'inventory'];
+  systemMessageTypes = ['maintenance', 'alert', 'info'];
 
-  ngOnInit(): void {
-    this.loadOnlineUsers();
-  }
+  constructor(
+    private adminService: AdminService,
+    private fb: FormBuilder
+  ) {
+    this.userNotificationForm = this.fb.group({
+      userId: ['', Validators.required],
+      message: ['', Validators.required],
+      type: ['order', Validators.required],
+      priority: ['normal'],
+      action: [''],
+      url: ['']
+    });
 
-  loadOnlineUsers(): void {
-    this.isLoading = true;
-    this.error = null;
-
-    this.adminService.getOnlineUsers(1, 100, false).subscribe({
-      next: (response) => {
-        this.onlineUsers = response.users;
-        this.isLoading = false;
-      },
-      error: (err) => {
-        this.error = 'Failed to load online users';
-        this.isLoading = false;
-        console.error('Error loading online users:', err);
-      }
+    this.systemMessageForm = this.fb.group({
+      message: ['', Validators.required],
+      type: ['info', Validators.required],
+      duration: [3600, [Validators.required, Validators.min(60)]],
+      targetRoles: this.fb.group({
+        customer: [true],
+        admin: [false]
+      })
     });
   }
 
-  toggleSelectAll(event: any): void {
-    if (event.target.checked) {
-      this.selectedUsers = this.onlineUsers.map(user => user.userId);
-    } else {
-      this.selectedUsers = [];
-    }
+  ngOnInit(): void {
+    // Component initialization logic
   }
 
-  isAllSelected(): boolean {
-    return this.selectedUsers.length === this.onlineUsers.length;
-  }
-
-  toggleUserSelection(userId: string): void {
-    const index = this.selectedUsers.indexOf(userId);
-    if (index === -1) {
-      this.selectedUsers.push(userId);
-    } else {
-      this.selectedUsers.splice(index, 1);
-    }
-  }
-
-  isSelected(userId: string): boolean {
-    return this.selectedUsers.includes(userId);
-  }
-
-  sendNotification(): void {
-    if (!this.notificationMessage.trim()) {
-      this.error = 'Please enter a notification message';
+  sendUserNotification(): void {
+    if (this.userNotificationForm.invalid) {
       return;
     }
 
-    if (this.selectedUsers.length === 0) {
-      this.error = 'Please select at least one user';
-      return;
-    }
-
-    this.isSending = true;
+    this.isLoading = true;
     this.error = null;
     this.success = null;
 
-    this.adminService.sendAdminNotification(
-      this.selectedUsers,
-      this.notificationMessage,
-      this.notificationType
-    ).subscribe({
-      next: () => {
+    const formValue = this.userNotificationForm.value;
+
+    // Prepare metadata
+    const metadata: any = {};
+    if (formValue.priority) metadata.priority = formValue.priority;
+    if (formValue.action) metadata.action = formValue.action;
+    if (formValue.url) metadata.url = formValue.url;
+
+    const notificationData = {
+      userId: formValue.userId,
+      message: formValue.message,
+      type: formValue.type,
+      metadata
+    };
+
+    this.adminService.sendAdminNotification(notificationData).subscribe({
+      next: (response) => {
         this.success = 'Notification sent successfully';
-        this.isSending = false;
-        this.notificationMessage = '';
+        this.isLoading = false;
+        this.userNotificationForm.get('message')?.reset();
       },
       error: (err) => {
         this.error = 'Failed to send notification';
-        this.isSending = false;
+        this.isLoading = false;
         console.error('Error sending notification:', err);
       }
     });
   }
 
-  broadcastMessage(): void {
-    if (!this.notificationMessage.trim()) {
-      this.error = 'Please enter a broadcast message';
+  broadcastSystemMessage(): void {
+    if (this.systemMessageForm.invalid) {
       return;
     }
 
-    if (!confirm('Are you sure you want to broadcast this message to ALL users?')) {
-      return;
-    }
-
-    this.isSending = true;
+    this.isLoading = true;
     this.error = null;
     this.success = null;
 
-    this.adminService.broadcastSystemMessage(
-      this.notificationMessage,
-      this.notificationType
-    ).subscribe({
-      next: () => {
-        this.success = 'Broadcast message sent successfully';
-        this.isSending = false;
-        this.notificationMessage = '';
+    const formValue = this.systemMessageForm.value;
+    const targetRolesGroup = formValue.targetRoles;
+
+    // Convert target roles from form group to array
+    const targetRoles: string[] = [];
+    if (targetRolesGroup.customer) targetRoles.push('customer');
+    if (targetRolesGroup.admin) targetRoles.push('admin');
+
+    const messageData = {
+      message: formValue.message,
+      type: formValue.type,
+      duration: formValue.duration,
+      targetRoles: targetRoles.length > 0 ? targetRoles : undefined
+    };
+
+    this.adminService.broadcastSystemMessage(messageData).subscribe({
+      next: (response) => {
+        this.success = 'System message broadcasted successfully';
+        this.isLoading = false;
+        this.systemMessageForm.get('message')?.reset();
       },
       error: (err) => {
-        this.error = 'Failed to send broadcast message';
-        this.isSending = false;
-        console.error('Error sending broadcast message:', err);
+        this.error = 'Failed to broadcast system message';
+        this.isLoading = false;
+        console.error('Error broadcasting system message:', err);
       }
     });
   }

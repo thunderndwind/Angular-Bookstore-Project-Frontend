@@ -1,28 +1,152 @@
-<div class="d-flex">
-  <div class="content p-4 w-100">
-    <h2 class="mb-4">Admin Dashboard</h2>
-        
-    <div *ngIf="isLoading" class="text-center">
-      <div class="spinner-border" role="status">
-        <span class="visually-hidden">Loading...</span>
+<div class="container-fluid">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Admin Dashboard</h2>
+    <button class="btn btn-primary" (click)="refreshData()" [disabled]="isLoading">
+      <i class="bi bi-arrow-clockwise me-1"></i> Refresh
+    </button>
+  </div>
+
+  <div *ngIf="isLoading" class="text-center my-5">
+    <div class="spinner-border" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+
+  <div *ngIf="error" class="alert alert-danger">
+    {{ error }}
+  </div>
+
+  <div *ngIf="!isLoading && !error" class="row">
+    <div class="col-md-3 mb-4">
+      <div class="card bg-primary text-white h-100">
+        <div class="card-body">
+          <h5 class="card-title">Total Books</h5>
+          <h2 class="mb-0">{{ totalBooks }}</h2>
+        </div>
+        <div class="card-footer bg-transparent border-0">
+          <a routerLink="/admin/books" class="text-white">Manage Books <i class="bi bi-arrow-right"></i></a>
+        </div>
       </div>
     </div>
-    
-    <div *ngIf="error" class="alert alert-danger">
-      {{ error }}
+
+    <div class="col-md-3 mb-4">
+      <div class="card bg-success text-white h-100">
+        <div class="card-body">
+          <h5 class="card-title">Total Users</h5>
+          <h2 class="mb-0">{{ totalUsers }}</h2>
+        </div>
+        <div class="card-footer bg-transparent border-0">
+          <a routerLink="/admin/users" class="text-white">Manage Users <i class="bi bi-arrow-right"></i></a>
+        </div>
+      </div>
     </div>
-    
-    <div *ngIf="!isLoading && !error" class="row">
-      <div class="col-md-4 mb-4">
-        <div class="card bg-primary text-white">
-          <div class="card-body">
-            <h5 class="card-title">Total Books</h5>
-            <h2 class="mb-0">{{ totalBooks }}</h2>
+
+    <div class="col-md-3 mb-4">
+      <div class="card bg-warning text-white h-100">
+        <div class="card-body">
+          <h5 class="card-title">Total Orders</h5>
+          <h2 class="mb-0">{{ totalOrders }}</h2>
+        </div>
+        <div class="card-footer bg-transparent border-0">
+          <a routerLink="/admin/orders" class="text-white">Manage Orders <i class="bi bi-arrow-right"></i></a>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3 mb-4">
+      <div class="card bg-info text-white h-100">
+        <div class="card-body">
+          <h5 class="card-title">Total Revenue</h5>
+          <h2 class="mb-0">${{ totalRevenue.toFixed(2) }}</h2>
+        </div>
+        <div class="card-footer bg-transparent border-0">
+          <a routerLink="/admin/orders" class="text-white">View Orders <i class="bi bi-arrow-right"></i></a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6 mb-4">
+      <div class="card h-100">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <h5 class="mb-0">Recent Orders</h5>
+          <a routerLink="/admin/orders" class="btn btn-sm btn-outline-primary">View All</a>
+        </div>
+        <div class="card-body">
+          <!-- Recent orders would go here -->
+          <p class="text-muted text-center" *ngIf="isLoading">Loading recent orders...</p>
+          <p class="text-muted text-center" *ngIf="!isLoading && !recentOrders?.length">No recent orders found</p>
+
+          <div class="list-group" *ngIf="recentOrders?.length">
+            <a *ngFor="let order of recentOrders" class="list-group-item list-group-item-action">
+              <div class="d-flex w-100 justify-content-between">
+                <h6 class="mb-1">Order #{{ order._id }}</h6>
+                <small>{{ order.createdAt | date:'short' }}</small>
+              </div>
+              <p class="mb-1">{{ order.user?.firstName }} {{ order.user?.lastName }}</p>
+              <small>${{ order.total_price.toFixed(2) }}</small>
+            </a>
           </div>
         </div>
       </div>
-      
-      <!--add more dashboard stats here -->
+    </div>
+
+    <div class="col-md-6 mb-4">
+      <div class="card h-100">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <h5 class="mb-0">System Health</h5>
+          <a routerLink="/admin/system-health" class="btn btn-sm btn-outline-primary">Details</a>
+        </div>
+        <div class="card-body">
+          <div class="d-flex align-items-center mb-3">
+            <div class="me-3">
+              <span class="badge rounded-pill" [ngClass]="{
+                  'bg-success': systemHealth === 'Good',
+                  'bg-warning': systemHealth === 'Warning',
+                  'bg-danger': systemHealth === 'Critical'
+                }">
+                {{ systemHealth }}
+              </span>
+            </div>
+            <div>
+              <h6 class="mb-0">System Status</h6>
+              <small class="text-muted">Last checked: {{ lastChecked | date:'medium' }}</small>
+            </div>
+          </div>
+
+          <!-- System metrics would go here -->
+          <div class="mb-3">
+            <label class="form-label d-flex justify-content-between">
+              <span>CPU Usage</span>
+              <span>{{ cpuUsage }}%</span>
+            </label>
+            <div class="progress">
+              <div class="progress-bar" [ngClass]="{
+                  'bg-success': cpuUsage < 50,
+                  'bg-warning': cpuUsage >= 50 && cpuUsage < 80,
+                  'bg-danger': cpuUsage >= 80
+                }" [style.width.%]="cpuUsage">
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label d-flex justify-content-between">
+              <span>Memory Usage</span>
+              <span>{{ memoryUsage }}%</span>
+            </label>
+            <div class="progress">
+              <div class="progress-bar" [ngClass]="{
+                  'bg-success': memoryUsage < 50,
+                  'bg-warning': memoryUsage >= 50 && memoryUsage < 80,
+                  'bg-danger': memoryUsage >= 80
+                }" [style.width.%]="memoryUsage">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>

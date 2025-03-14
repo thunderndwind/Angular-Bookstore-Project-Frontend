@@ -1,134 +1,141 @@
 <div class="container-fluid">
-    <h2 class="mb-4">Admin Notifications</h2>
+  <h2 class="mb-4">Admin Notifications</h2>
 
-    <!-- Alerts -->
-    @if (error) {
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        {{ error }}
-        <button type="button" class="btn-close" (click)="error = null"
-            aria-label="Close"></button>
-    </div>
-    }
+  <!-- Alerts -->
+  <div *ngIf="error" class="alert alert-danger alert-dismissible fade show" role="alert">
+    {{ error }}
+    <button type="button" class="btn-close" (click)="error = null" aria-label="Close"></button>
+  </div>
 
-    @if (success) {
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        {{ success }}
-        <button type="button" class="btn-close" (click)="success = null"
-            aria-label="Close"></button>
-    </div>
-    }
+  <div *ngIf="success" class="alert alert-success alert-dismissible fade show" role="alert">
+    {{ success }}
+    <button type="button" class="btn-close" (click)="success = null" aria-label="Close"></button>
+  </div>
 
-    <!-- Notification Form -->
-    <div class="card mb-4">
+  <div class="row">
+    <!-- User Notification Form -->
+    <div class="col-md-6 mb-4">
+      <div class="card">
         <div class="card-header">
-            <h5 class="mb-0">Send Notification</h5>
+          <h5 class="mb-0">Send User Notification</h5>
         </div>
         <div class="card-body">
-            <form (ngSubmit)="sendNotification()">
-                <!-- ... (form controls remain the same) ... -->
-                <div class="d-flex justify-content-between">
-                    <button type="submit" class="btn btn-primary"
-                        [disabled]="isSending || !notificationMessage.trim() || selectedUsers.length === 0">
-                        @if (isSending) {
-                        <span class="spinner-border spinner-border-sm me-1"
-                            role="status" aria-hidden="true"></span>
-                        }
-                        Send to Selected Users
-                    </button>
-                    <button type="button" class="btn btn-danger"
-                        (click)="broadcastMessage()"
-                        [disabled]="isSending || !notificationMessage.trim()">
-                        @if (isSending) {
-                        <span class="spinner-border spinner-border-sm me-1"
-                            role="status" aria-hidden="true"></span>
-                        }
-                        Broadcast to All Users
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
+          <form [formGroup]="userNotificationForm" (ngSubmit)="sendUserNotification()">
+            <div class="mb-3">
+              <label for="userId" class="form-label">User ID</label>
+              <input type="text" class="form-control" id="userId" formControlName="userId" placeholder="Enter user ID">
+              <div *ngIf="userNotificationForm.get('userId')?.invalid && userNotificationForm.get('userId')?.touched"
+                class="text-danger">
+                User ID is required
+              </div>
+            </div>
 
-    <!-- User Selection -->
-    <div class="card">
-        <div
-            class="card-header d-flex justify-content-between align-items-center">
-            <h5 class="mb-0">Select Recipients</h5>
-            <button class="btn btn-sm btn-outline-primary"
-                (click)="loadOnlineUsers()" [disabled]="isLoading">
-                <i class="bi bi-arrow-clockwise me-1"></i>
-                Refresh Users
+            <div class="mb-3">
+              <label for="message" class="form-label">Message</label>
+              <textarea class="form-control" id="message" formControlName="message" rows="3"
+                placeholder="Enter notification message"></textarea>
+              <div *ngIf="userNotificationForm.get('message')?.invalid && userNotificationForm.get('message')?.touched"
+                class="text-danger">
+                Message is required
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="type" class="form-label">Notification Type</label>
+              <select class="form-select" id="type" formControlName="type">
+                <option *ngFor="let type of notificationTypes" [value]="type">{{ type }}</option>
+              </select>
+            </div>
+
+            <div class="mb-3">
+              <label for="priority" class="form-label">Priority</label>
+              <select class="form-select" id="priority" formControlName="priority">
+                <option value="low">Low</option>
+                <option value="normal">Normal</option>
+                <option value="high">High</option>
+              </select>
+            </div>
+
+            <div class="mb-3">
+              <label for="action" class="form-label">Action (Optional)</label>
+              <input type="text" class="form-control" id="action" formControlName="action"
+                placeholder="e.g., view_page, update_profile">
+            </div>
+
+            <div class="mb-3">
+              <label for="url" class="form-label">URL (Optional)</label>
+              <input type="text" class="form-control" id="url" formControlName="url"
+                placeholder="e.g., /profile, /orders">
+            </div>
+
+            <button type="submit" class="btn btn-primary" [disabled]="userNotificationForm.invalid || isLoading">
+              <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-1" role="status"
+                aria-hidden="true"></span>
+              Send Notification
             </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- System Message Form -->
+    <div class="col-md-6 mb-4">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="mb-0">Broadcast System Message</h5>
         </div>
         <div class="card-body">
-            @if (isLoading) {
-            <div class="text-center my-3">
-                <div class="spinner-border" role="status">
-                    <span class="visually-hidden">Loading...</span>
-                </div>
+          <form [formGroup]="systemMessageForm" (ngSubmit)="broadcastSystemMessage()">
+            <div class="mb-3">
+              <label for="systemMessage" class="form-label">Message</label>
+              <textarea class="form-control" id="systemMessage" formControlName="message" rows="3"
+                placeholder="Enter system message"></textarea>
+              <div *ngIf="systemMessageForm.get('message')?.invalid && systemMessageForm.get('message')?.touched"
+                class="text-danger">
+                Message is required
+              </div>
             </div>
-            } @else {
-            <div>
-                <div class="mb-3">
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox"
-                            id="selectAll" [checked]="isAllSelected()"
-                            (change)="toggleSelectAll($event)">
-                        <label class="form-check-label" for="selectAll">
-                            Select All Users
-                        </label>
-                    </div>
-                </div>
 
-                <div class="table-responsive">
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>
-                                <th>Select</th>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Role</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @for (user of onlineUsers; track user.userId) {
-                            <tr>
-                                <td>
-                                    <div class="form-check">
-                                        <input class="form-check-input"
-                                            type="checkbox"
-                                            [id]="'user-' + user.userId"
-                                            [checked]="isSelected(user.userId)"
-                                            (change)="toggleUserSelection(user.userId)">
-                                    </div>
-                                </td>
-                                <td>{{ user.name }}</td>
-                                <td>{{ user.email }}</td>
-                                <td><span class="badge bg-info">{{ user.role
-                                        }}</span></td>
-                                <td>
-                                    <span class="badge" [class]="{
-                                        'bg-success': user.status === 'online',
-                                        'bg-warning': user.status === 'away',
-                                        'bg-danger': user.status === 'busy',
-                                        'bg-secondary': user.status === 'offline' || user.status === 'unknown'
-                                    }">
-                                        {{ user.status }}
-                                    </span>
-                                </td>
-                            </tr>
-                            } @empty {
-                            <tr>
-                                <td colspan="5" class="text-center">No online
-                                    users found</td>
-                            </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
+            <div class="mb-3">
+              <label for="messageType" class="form-label">Message Type</label>
+              <select class="form-select" id="messageType" formControlName="type">
+                <option *ngFor="let type of systemMessageTypes" [value]="type">{{ type }}</option>
+              </select>
             </div>
-            }
+
+            <div class="mb-3">
+              <label for="duration" class="form-label">Duration (seconds)</label>
+              <input type="number" class="form-control" id="duration" formControlName="duration" min="60">
+              <div *ngIf="systemMessageForm.get('duration')?.invalid && systemMessageForm.get('duration')?.touched"
+                class="text-danger">
+                Duration must be at least 60 seconds
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Target Roles</label>
+              <div class="form-check" formGroupName="targetRoles">
+                <input class="form-check-input" type="checkbox" id="customerRole" formControlName="customer">
+                <label class="form-check-label" for="customerRole">
+                  Customers
+                </label>
+              </div>
+              <div class="form-check" formGroupName="targetRoles">
+                <input class="form-check-input" type="checkbox" id="adminRole" formControlName="admin">
+                <label class="form-check-label" for="adminRole">
+                  Administrators
+                </label>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary" [disabled]="systemMessageForm.invalid || isLoading">
+              <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-1" role="status"
+                aria-hidden="true"></span>
+              Broadcast Message
+            </button>
+          </form>
         </div>
+      </div>
     </div>
+  </div>
 </div>

@@ -18,7 +18,7 @@ import { AdminLayoutComponent } from './admin/admin-layout/admin-layout.componen
 import { ForbiddenComponent } from './pages/forbidden/forbidden.component';
 import { NotificationComponent } from './pages/notification/notification.component';
 import { MainLayoutComponent } from './pages/main-layout/main-layout.component';
-//import { ManageOrdersComponent } from './admin/manage-orders/manage-orders.component';
+import { ManageOrdersComponent } from './admin/manage-orders/manage-orders.component';
 
 export const routes: Routes = [
     {
@@ -56,7 +56,7 @@ export const routes: Routes = [
             { path: 'monitoring', component: UserMonitoringComponent },
             { path: 'system-health', component: SystemHealthComponent },
             { path: 'notifications', component: AdminNotificationsComponent },
-            //{ path: 'orders', component: ManageOrdersComponent },
+            { path: 'orders', component: ManageOrdersComponent },
         ]
     },
     { path: '**', component: NotFoundComponent }

@@ -1,4 +1,4 @@
-/*import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { AdminService } from '../../services/admin/admin.service';
 import { DatePipe, CommonModule } from '@angular/common';
@@ -184,4 +184,4 @@ export class ManageOrdersComponent implements OnInit {
   formatPrice(price: number): string {
     return price ? `$${price.toFixed(2)}` : '$0.00';
   }
-}*/
+}
