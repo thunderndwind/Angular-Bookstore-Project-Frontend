@@ -28,20 +28,22 @@ export const routes: Routes = [
             { path: '', redirectTo: 'home', pathMatch: 'full' },
             { path: 'home', component: HomeComponent },
             { path: 'user/:id', component: UserProfileComponent, title: 'User Profile',},
-            { path: 'order/user/:id',component: OrderHistoryComponent,title: 'Order History',},
-            { path: 'notifications',
-                children: [
-                    { path: 'user/:userId', component: NotificationComponent },
-                    { path: 'user/:userId/unread-count', component: NotificationComponent },
-                    { path: '**', component: NotificationComponent }
-                ]
-            },
+            { path: 'order/user/',component: OrderHistoryComponent,title: 'Order History',},
+            
+        ]
+    },
+    { path: 'notifications',
+        children: [
+            { path: 'user/:userId', component: NotificationComponent },
+            { path: 'user/:userId/unread-count', component: NotificationComponent },
+            { path: '**', component: NotificationComponent }
         ]
     },
     { path: 'login', component: LoginComponent },
     { path: 'register', component: RegisterComponent },
     { path: 'cart', component: CartComponent, canActivate: [authGuard] },
     { path: 'forbidden', component: ForbiddenComponent },
+    { path: 'user', component: UserProfileComponent, title: 'User Profile',},
     {
         path: 'admin',
         component: AdminLayoutComponent,

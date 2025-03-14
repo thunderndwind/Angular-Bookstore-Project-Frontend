@@ -1,117 +1,142 @@
 <div class="container py-5">
-    @if (user) {
-      <div class="card shadow-lg p-4 mb-5">
-        <div class="card-body">
-          <h2 class="card-title text-center mb-4">Hello {{ user?.firstName }}!</h2>
-          <p><strong>Email:</strong> {{ user?.email }}</p>
-          <p><strong>First Name:</strong> {{ user?.firstName }}</p>
-          <p><strong>Last Name:</strong> {{ user?.lastName }}</p>
-          <p><strong>Username:</strong> {{ user?.userName }}</p>
-  
-          <p><strong>Addresses:</strong></p>
-          <ul class="list-group list-group-flush mb-3">
-            @for (address of user?.profile?.addresses; track $index) {
-              <li class="list-group-item">
-                {{ address.street }}, {{ address.city }}, {{ address.governorate }}    Postal Code:{{ address.postalCode }}
+  @if (user) {
+    <div class="card shadow-lg p-4 mb-5">
+      <div class="card-body">
+        <h2 class="card-title text-center mb-4">Hello {{ user?.firstName }}!</h2>
+        <p><strong>Email:</strong> {{ user?.email }}</p>
+        <p><strong>First Name:</strong> {{ user?.firstName }}</p>
+        <p><strong>Last Name:</strong> {{ user?.lastName }}</p>
+        <p><strong>Username:</strong> {{ user?.userName }}</p>
+
+        <p><strong>Addresses:</strong></p>
+        <ul class="list-group list-group-flush mb-3">
+          @for (address of user?.profile?.addresses; track $index) {
+            <li class="list-group-item">
+              {{ address.street }}, {{ address.city }}, {{ address.governorate }} Postal Code: {{ address.postalCode }}
+            </li>
+          }
+        </ul>
+
+        <p><strong>Phone Numbers:</strong></p>
+        <ul class="list-group list-group-flush mb-3">
+          @for (phone of user?.profile?.phone_numbers; track $index) {
+            <li class="list-group-item">{{ phone }}</li>
+          }
+        </ul>
+
+        <p><strong>Payment Details:</strong></p>
+        
+        @if (user.payment_details?.card?.length || user.profile?.payment_details?.online_wallet) {
+          @if (user.payment_details?.card?.length) {
+            Cards:
+            @for (icard of user.payment_details?.card; track $index) {
+              <li class="list-group-item d-flex justify-content-between">
+                 {{ icard.card_number }}
               </li>
             }
-          </ul>
+          }
+          @if (user.payment_details?.online_wallet) {
+            <p>Online Wallet: {{ user.payment_details.online_wallet }}</p>
+          }
+        } @else {
+          <p>No payment details entered</p>
+        }
+      </div>
 
-          <p><strong>Phone Numbers:</strong></p>
-          <ul class="list-group list-group-flush mb-3">
-            @for (phone of user?.profile?.phone_numbers; track $index) {
-              <li class="list-group-item">{{ phone }}</li>
-            }
-          </ul>
+      <div class="text-center">
+        <button class="btn btn-primary" (click)="toggleEditMode()">
+          {{ isEditMode ? 'Close Editing' : 'Edit' }}
+        </button>
+      </div>
+    </div>
+
+    @if (isEditMode) {
+      <div class="card p-4 shadow-sm">
+        <h3 class="card-title text-center mb-4">Edit Profile</h3>
+        <form (ngSubmit)="saveChanges()">
+          <div class="mb-3">
+            <label for="firstName" class="form-label">First Name:</label>
+            <input id="firstName" [(ngModel)]="user.firstName" name="firstName" class="form-control" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="lastName" class="form-label">Last Name:</label>
+            <input id="lastName" [(ngModel)]="user.lastName" name="lastName" class="form-control" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="newAddress" class="form-label">Add New Address:</label>
+            <div class="row g-3">
+              <div class="col-md-3">
+                <input [(ngModel)]="newAddress.street" class="form-control" name="street" placeholder="Street">
+              </div>
+              <div class="col-md-3">
+                <input [(ngModel)]="newAddress.city" class="form-control" name="city" placeholder="City">
+              </div>
+              <div class="col-md-3">
+                <input [(ngModel)]="newAddress.governorate" class="form-control" name="governorate" placeholder="Governorate">
+              </div>
+              <div class="col-md-3">
+                <input [(ngModel)]="newAddress.postalCode" class="form-control" name="postalCode" placeholder="Postal Code">
+              </div>
+            </div>
+            <button type="button" class="btn btn-secondary mt-2" (click)="addAddress()">Add Address</button>
+          </div>
+
+          <div class="mb-3">
+            <ul class="list-group list-group-flush mt-3">
+              @for (address of user?.profile?.addresses; track $index) {
+                <li class="list-group-item d-flex justify-content-between">
+                  {{ address.street }}, {{ address.city }}, {{ address.governorate }} Postal Code: {{ address.postalCode }}
+                  <button type="button" class="btn btn-danger btn-sm" (click)="removeAddress($index)">Remove</button>
+                </li>
+              }
+            </ul>
+          </div>
+
+          <div class="mb-3">
+            <label for="newPhoneNumber" class="form-label">Phone Numbers:</label>
+            <input id="newPhoneNumber" [(ngModel)]="newPhoneNumber" name="newPhoneNumber" class="form-control">
+            <button type="button" class="btn btn-secondary mt-2" (click)="addNumber()">Add Phone Number</button>
+            <ul class="list-group list-group-flush mt-3">
+              @for (phone of user?.profile?.phone_numbers; track $index) {
+                <li class="list-group-item d-flex justify-content-between">
+                  {{ phone }}
+                  <button type="button" class="btn btn-danger btn-sm" (click)="removeNumber($index)">Remove</button>
+                </li>
+              }
+            </ul>
+          </div>
   
           <p><strong>Payment Details:</strong></p>
-          @if(user.profile?.payment_details?.card || user.profile?.payment_details?.online_wallet){
-            @if(user.profile?.payment_details?.card){
-              <p>Card: {{ user?.profile?.payment_details.card }}</p>
-            }
-            @if(user.profile?.payment_details?.online_wallet){
-              <p>Online Wallet: {{ user.profile?.payment_details.online_wallet }}</p>
-            }
+          @if (user.payment_details?.card?.length) {
+            Cards:
+            <ul class="list-group list-group-flush">
+              @for (card of user.payment_details?.card; track $index) {
+                <li class="list-group-item d-flex justify-content-between">
+                  {{ card.card_number }}
+                  <button type="button" class="btn btn-danger btn-sm" (click)="removeCard($index)">Remove</button>
+                </li>
+              }
+            </ul>
           }
-          @else{
-            <p>No payment details entered</p>
-          }
-        </div>
-  
-        <div class="text-center">
-          <button class="btn btn-primary" (click)="toggleEditMode()">
-            {{ isEditMode ? 'Close Editing' : 'Edit' }}
-          </button>
-        </div>
-      </div>
-      @if (isEditMode) {
-
-        <div class="card p-4 shadow-sm">
-            <h3 class="card-title text-center mb-4">Edit Profile</h3>
-            <form (ngSubmit)="saveChanges()">
-
-    
-              <div class="mb-3">
-                <label for="firstName" class="form-label">First Name:</label>
-                <input id="firstName" [(ngModel)]="user.firstName" name="firstName" class="form-control" required>
-              </div>
-    
-              <div class="mb-3">
-                <label for="lastName" class="form-label">Last Name:</label>
-                <input id="lastName" [(ngModel)]="user.lastName" name="lastName" class="form-control" required>
-              </div>
-    
-              <div class="mb-3">
-                <label for="newAddress" class="form-label">Add New Address:</label>
-                <div class="row g-3">
-                  <div class="col-md-3">
-                    <input [(ngModel)]="newAddress.street" class="form-control" name = "street" placeholder="Street">
-                  </div>
-                  <div class="col-md-3">
-                    <input [(ngModel)]="newAddress.city" class="form-control" name = "city" placeholder="City">
-                  </div>
-                  <div class="col-md-3">
-                    <input [(ngModel)]="newAddress.governorate" class="form-control" name = "governorate" placeholder="Governorate">
-                  </div>
-                  <div class="col-md-3">
-                    <input [(ngModel)]="newAddress.postalCode" class="form-control" name = "postalCode" placeholder="Postal Code">
-                  </div>
-                </div>
-                <button type="button" class="btn btn-secondary mt-2" (click)="addAddress()">Add Address</button>
-              </div>
-              <div class="mb-3">
-                <ul class="list-group list-group-flush mt-3">
-                  @for (address of user?.profile?.addresses; track $index) {
-                    <li class="list-group-item d-flex justify-content-between">
-                      {{ address.street }}, {{ address.city }}, {{ address.governorate }} Postal Code: {{ address.postalCode }}
-                      <button type="button" class="btn btn-danger btn-sm" (click)="removeAddress($index)">Remove</button>
-                    </li>
-                  }
-                </ul>
-                </div>
-    
-              <div class="mb-3">
-                <label for="newPhoneNumber" class="form-label">Phone Numbers:</label>
-                <input id="newPhoneNumber" [(ngModel)]="newPhoneNumber" name="newPhoneNumber" class="form-control">
-                <button type="button" class="btn btn-secondary mt-2" (click)="addNumber()">Add Phone Number</button>
-                <ul class="list-group list-group-flush mt-3">
-                  @for (phone of user?.profile?.phone_numbers; track $index) {
-                    <li class="list-group-item d-flex justify-content-between">
-                      {{ phone }}
-                      <button type="button" class="btn btn-danger btn-sm" (click)="removeNumber($index)">Remove</button>
-                    </li>
-                  }
-                </ul>
-              </div>
-    
-              <div class="text-center">
-                <button type="submit" class="btn btn-success">Save Changes</button>
-              </div>
-            </form>
+          <div class="mb-3">
+            <label for="cardNumber" class="form-label">New Card:</label>
+            <input id="cardNumber" [(ngModel)]="newCard.card_number" name="cardNumber" class="form-control" placeholder="Card Number">
+            <button type="button" class="btn btn-secondary mt-2" (click)="addCard()">Add Card</button>
           </div>
-      }
-    } @else {
-      <div class="alert alert-info text-center">Loading user profile...</div>
+          <div class="mb-3">
+            <label for="onlineWallet" class="form-label">Online Wallet:</label>
+            <input id="onlineWallet" [(ngModel)]="user.payment_details.online_wallet" name="onlineWallet" class="form-control" placeholder="Enter Online Wallet">
+          </div>
+
+          <div class="text-center">
+            <button type="submit" class="btn btn-success">Save Changes</button>
+          </div>
+        </form>
+      </div>
     }
-  </div>
-  
+  } @else {
+    <div class="alert alert-info text-center">Loading user profile...</div>
+  }
+</div>

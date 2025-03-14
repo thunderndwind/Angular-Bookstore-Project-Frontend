@@ -20,13 +20,11 @@ export class UserProfileComponent {
   ) { }
 
   ngOnInit(): void {
-    const userId = this.route.snapshot.paramMap.get('id');
+    this.userService.getUser().subscribe(data => {
+      this.user = structuredClone(data);
+      console.log(this.user);
 
-    if (userId) {
-      this.userService.getUser(userId).subscribe(data => {
-        this.user = data;
-      });
-    }
+    });
   }
 
   toggleEditMode(): void {
@@ -57,6 +55,9 @@ export class UserProfileComponent {
       this.newAddress.governorate.trim() &&
       this.newAddress.postalCode.trim()
     ) {
+      if(!this.user.profile.addresses){
+        this.user.profile.addresses=[];
+      }
       this.user.profile.addresses.push(structuredClone(this.newAddress));
       this.newAddress = { street: '', city: '', governorate: '', postalCode: '' };
     }
@@ -70,14 +71,34 @@ export class UserProfileComponent {
 
   addNumber() {
     if (this.newPhoneNumber.trim()) {
-      this.user.profile.phoneNumbers.push(this.newPhoneNumber.trim());
+      if(!this.user.profile.phone_numbers){
+        this.user.profile.phone_numbers=[];
+      }
+      this.user.profile.phone_numbers.push(this.newPhoneNumber.trim());
       this.newPhoneNumber = '';
     }
   }
 
   removeNumber(index: number) {
-    this.user.profile.phoneNumbers.splice(index, 1);
+    this.user.profile.phone_numbers.splice(index, 1);
   }
+
+  newCard = {
+    card_number: '',
+  };
+
+  addCard() {
+    if (!this.user.payment_details.card) {
+      this.user.payment_details.card = [];
+    }
+    this.user.payment_details.card.push(structuredClone(this.newCard));
+    this.newCard = { card_number: ''};
+  }
+
+  removeCard(index: number) {
+    this.user.payment_details.card.splice(index, 1);
+  }
+
 
 
 }

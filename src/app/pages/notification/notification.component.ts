@@ -29,14 +29,9 @@ export class NotificationComponent implements OnInit {
     });
   }
   loadNotifications(): void {
-    const userId = this.route.snapshot.paramMap.get('userId');
-    if (!userId) {
-      console.error('User ID is null');
-      return;
-    }
-    console.log(userId);
+
     this.notificationService
-      .getNotifications(this.currentPage, this.pageSize, userId)
+      .getNotifications(this.currentPage, this.pageSize)
       .subscribe((response: any) => {
         this.notificationService.updateNotifications(response.notifications);
         this.totalNotifications = response.totalNotifications;
@@ -45,12 +40,7 @@ export class NotificationComponent implements OnInit {
 
 
   loadUnreadCount(): void {
-    const userId = this.route.snapshot.paramMap.get('userId');
-    if (!userId) {
-      console.error('User ID is null');
-      return;
-    }
-    this.notificationService.getUnreadCount(userId).subscribe((response: any) => {
+    this.notificationService.getUnreadCount().subscribe((response: any) => {
       this.unreadCount = response.count;
       console.log(this.unreadCount);
     });
@@ -74,12 +64,7 @@ export class NotificationComponent implements OnInit {
   }
 
   markAllAsRead(): void {
-    const userId = this.route.snapshot.paramMap.get('userId');
-    if (!userId) {
-      console.error('User ID is null');
-      return;
-    }
-    this.notificationService.markAllAsRead(userId).subscribe(() => {
+    this.notificationService.markAllAsRead().subscribe(() => {
       this.notifications = this.notifications.map((notification) => ({
         ...notification,
         read: true,
@@ -97,12 +82,7 @@ export class NotificationComponent implements OnInit {
   }
 
   deleteAllNotifications(): void {
-    const userId = this.route.snapshot.paramMap.get('userId');
-    if (!userId) {
-      console.error('User ID is null');
-      return;
-    }
-    this.notificationService.deleteAllNotifications(userId).subscribe(() => {
+    this.notificationService.deleteAllNotifications().subscribe(() => {
       this.notifications = [];
     });
   }

@@ -20,11 +20,13 @@
     "@angular/platform-browser-dynamic": "^19.2.0",
     "@angular/router": "^19.2.0",
     "@fortawesome/fontawesome-free": "^6.7.2",
+    "@popperjs/core": "^2.11.8",
     "angular-oauth2-oidc": "^19.0.0",
     "animate.css": "^4.1.1",
     "bootstrap": "^5.3.3",
     "bootstrap-icons": "^1.11.3",
     "jquery": "^3.7.1",
+    "jwt-decode": "^4.0.0",
     "ngx-wow": "^2.0.1",
     "popper.js": "^1.16.1",
     "rxjs": "~7.8.0",
@@ -46,5 +48,17 @@
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
     "typescript": "~5.7.2"
-  }
+  },
+  "description": "This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.0.",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SnowMar-TI/Bookstore-Project-Frontend.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SnowMar-TI/Bookstore-Project-Frontend/issues"
+  },
+  "homepage": "https://github.com/SnowMar-TI/Bookstore-Project-Frontend#readme"
 }

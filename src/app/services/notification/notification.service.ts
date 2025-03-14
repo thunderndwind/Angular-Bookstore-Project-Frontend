@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Socket, io } from 'socket.io-client';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { AuthService } from '../auth/auth.service';
+
 
 
 @Injectable({
@@ -18,7 +20,7 @@ export class NotificationService {
   }
   
   
-  constructor(private http: HttpClient) { 
+  constructor(private http: HttpClient, private authService: AuthService) { 
     this.socket = io(this.apiUrl, { transports: ['websocket'] });
     this.setupSocketListeners();
 
@@ -31,7 +33,8 @@ export class NotificationService {
     });
   }
 
-  getNotifications(page: number, limit: number, userId: string): Observable<any> {
+  getNotifications(page: number, limit: number): Observable<any> {
+    const userId = this.authService.getCurrentUserId(); 
     return this.http.get(`${this.apiUrl}/notifications/user/${userId}`, {
       params: { page, limit },
     });
@@ -44,7 +47,9 @@ export class NotificationService {
     );
   }
 
-  markAllAsRead(userId: string): Observable<any> {
+  markAllAsRead(): Observable<any> {
+    const userId = this.authService.getCurrentUserId(); 
+
     return this.http.put(`${this.apiUrl}/notifications/user/${userId}/read-all`, {});
   }
 
@@ -52,11 +57,13 @@ export class NotificationService {
     return this.http.delete(`${this.apiUrl}/notifications/${notificationId}`);
   }
 
-  deleteAllNotifications(userId: string): Observable<any> {
+  deleteAllNotifications(): Observable<any> {
+    const userId = this.authService.getCurrentUserId(); 
     return this.http.delete(`${this.apiUrl}/notifications/user/${userId}`);
   }
 
-  getUnreadCount(userId: string): Observable<any> {
+  getUnreadCount(): Observable<any> {
+    const userId = this.authService.getCurrentUserId(); 
     return this.http.get(`${this.apiUrl}/notifications/user/${userId}/unread-count`);
   }
 
