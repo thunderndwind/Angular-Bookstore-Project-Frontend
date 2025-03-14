@@ -18,6 +18,7 @@ import { AdminLayoutComponent } from './admin/admin-layout/admin-layout.componen
 import { ForbiddenComponent } from './pages/forbidden/forbidden.component';
 import { NotificationComponent } from './pages/notification/notification.component';
 import { MainLayoutComponent } from './pages/main-layout/main-layout.component';
+import { DetailsPageComponent } from './pages/details-page/details-page.component';
 import { ManageOrdersComponent } from './admin/manage-orders/manage-orders.component';
 
 export const routes: Routes = [
@@ -27,23 +28,25 @@ export const routes: Routes = [
         children: [
             { path: '', redirectTo: 'home', pathMatch: 'full' },
             { path: 'home', component: HomeComponent },
-            { path: 'user/:id', component: UserProfileComponent, title: 'User Profile',},
-            { path: 'order/user/',component: OrderHistoryComponent,title: 'Order History',},
-            
+            { path: 'notifications',
+                canActivate: [authGuard],
+                children: [
+                    { path: 'user/:userId', component: NotificationComponent },
+                    { path: 'user/:userId/unread-count', component: NotificationComponent },
+                    { path: '**', component: NotificationComponent }
+                ]
+            },
+            { path: 'order/user',component: OrderHistoryComponent,title: 'Order History', canActivate: [authGuard]},
+            { path:'details/:id', component: DetailsPageComponent, title: 'Details Page'},
+            { path: 'cart', component: CartComponent, canActivate: [authGuard] },
+            { path: 'forbidden', component: ForbiddenComponent, canActivate: [authGuard]},
+            { path: 'user', component: UserProfileComponent, title: 'User Profile', canActivate: [authGuard]},
+
         ]
-    },
-    { path: 'notifications',
-        children: [
-            { path: 'user/:userId', component: NotificationComponent },
-            { path: 'user/:userId/unread-count', component: NotificationComponent },
-            { path: '**', component: NotificationComponent }
-        ]
+        
     },
     { path: 'login', component: LoginComponent },
     { path: 'register', component: RegisterComponent },
-    { path: 'cart', component: CartComponent, canActivate: [authGuard] },
-    { path: 'forbidden', component: ForbiddenComponent },
-    { path: 'user', component: UserProfileComponent, title: 'User Profile',},
     {
         path: 'admin',
         component: AdminLayoutComponent,

@@ -14,24 +14,23 @@ import { AuthService } from '../../services/auth/auth.service'; // Add this if y
 })
 export class BookCardComponent {
   @Input() book: any;
-  addingToCart = false; // Add loading state
+  addingToCart = false;
   
   constructor(
     private router: Router,
     private cartService: CartService,
-    private authService: AuthService // Add this if you have one
+    private authService: AuthService
   ) {}
   
   viewBookDetails(): void {
     if (this.book && this.book._id) {
-      this.router.navigate(['/books', this.book._id]);
+      this.router.navigate(['/details', this.book._id]);
     } else {
       console.error('Unable to navigate: book ID is missing');
     }
   }
   
   addToCart(): void {
-    // Check if book has an ID
     if (!this.book || !this.book._id) {
       console.error('Cannot add to cart: book ID is missing');
       return;
