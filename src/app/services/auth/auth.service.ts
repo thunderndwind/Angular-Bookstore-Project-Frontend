@@ -8,7 +8,7 @@ import { jwtDecode } from 'jwt-decode';
   providedIn: 'root',
 })
 export class AuthService {
-  private apiUrl = 'http://localhost:5000';
+  private apiUrl = 'https://celeste-fbd25ae57588.herokuapp.com';
   private accessTokenKey = 'access_token';
   private refreshTokenKey = 'refresh_token';
 

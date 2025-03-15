@@ -11,7 +11,7 @@ import { CloseScrollStrategy } from '@angular/cdk/overlay';
   providedIn: 'root'
 })
 export class NotificationService {
-  private apiUrl = 'http://localhost:5000';
+  private apiUrl = 'https://celeste-fbd25ae57588.herokuapp.com';
   private socket: Socket;
   private notificationsSubject = new BehaviorSubject<any[]>([]);
   public notifications$ = this.notificationsSubject.asObservable();

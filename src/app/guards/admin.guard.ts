@@ -28,7 +28,7 @@ export class adminGuard implements CanActivate {
       return false;
     }
 
-    return this.http.get<any>('http://localhost:5000/admin/books', {
+    return this.http.get<any>('https://celeste-fbd25ae57588.herokuapp.com/admin/books', {
       headers: {
         Authorization: `Bearer ${this.authService.getAccessToken()}`
       }

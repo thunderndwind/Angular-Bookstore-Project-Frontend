@@ -13,7 +13,7 @@ import { firstValueFrom } from 'rxjs';
   providedIn: 'root'
 })
 export class DetailsServices {
-  private apiUrl = 'http://localhost:5000/book';
+  private apiUrl = 'https://celeste-fbd25ae57588.herokuapp.com/book';
 
   constructor(private http: HttpClient) { }
 
@@ -33,7 +33,7 @@ export class DetailsServices {
     return this.http.patch<any>(`${this.apiUrl}/${bookID}/${reviewID}`, revBody);
   }
   addToCart(cartBody: any){
-    return this.http.patch<any>(`http://localhost:5000/cart/add`, cartBody); 
+    return this.http.patch<any>(`https://celeste-fbd25ae57588.herokuapp.com/cart/add`, cartBody); 
   }
 
 async getUser(): Promise<{ name: string; _id: string } | undefined> {
@@ -44,7 +44,7 @@ async getUser(): Promise<{ name: string; _id: string } | undefined> {
     const decoded: any = jwtDecode(token);
     
     const user = await firstValueFrom(
-      this.http.get<any>(`http://localhost:5000/user/${decoded.userId}`)
+      this.http.get<any>(`https://celeste-fbd25ae57588.herokuapp.com/user/${decoded.userId}`)
     );
 
     return { name: `${user.firstName} ${user.lastName}`, _id: user._id };

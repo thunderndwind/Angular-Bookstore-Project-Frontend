@@ -19,7 +19,7 @@ interface SocketConfig {
 export class AdminSocketService {
   private socket: Socket | null = null;
 
-  private apiUrl = 'http://localhost:5000'; // Use environment variable with fallback
+  private apiUrl = 'https://celeste-fbd25ae57588.herokuapp.com'; // Use environment variable with fallback
 
   // Subjects for different event types
   private newOrderSubject = new Subject<any>();

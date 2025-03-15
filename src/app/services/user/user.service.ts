@@ -6,7 +6,7 @@ import { AuthService } from '../auth/auth.service';
   providedIn: 'root'
 })
 export class UserService {
-  private apiUrl = 'http://localhost:5000'; //nodejs server
+  private apiUrl = 'https://celeste-fbd25ae57588.herokuapp.com'; //nodejs server
 
   constructor(private http: HttpClient, private authService: AuthService) {}
 

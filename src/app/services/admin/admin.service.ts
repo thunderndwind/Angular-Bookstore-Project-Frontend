@@ -7,7 +7,7 @@ import { catchError } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class AdminService {
-  private apiUrl = 'http://localhost:5000/admin';
+  private apiUrl = 'https://celeste-fbd25ae57588.herokuapp.com/admin';
 
   constructor(private http: HttpClient) { }
 
@@ -177,7 +177,7 @@ export class AdminService {
     if (options.startDate) params = params.set('startDate', options.startDate);
     if (options.endDate) params = params.set('endDate', options.endDate);
 
-    return this.http.get(`http://localhost:5000/order`, { params }).pipe(
+    return this.http.get(`https://celeste-fbd25ae57588.herokuapp.com/order`, { params }).pipe(
       catchError(error => {
         console.error('Error fetching orders:', error);
         return of({ orders: [], pagination: { total: 0, page: 1, limit: 10, pages: 0 } });

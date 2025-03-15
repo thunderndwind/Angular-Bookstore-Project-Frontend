@@ -7,7 +7,7 @@ import { catchError } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class BookService {
-  private apiUrl = 'http://localhost:5000/book';
+  private apiUrl = 'https://celeste-fbd25ae57588.herokuapp.com/book';
 
   constructor(private http: HttpClient) { }
 

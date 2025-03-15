@@ -7,7 +7,7 @@ import { tap } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class CartService {
-  private apiUrl = 'http://localhost:5000';
+  private apiUrl = 'https://celeste-fbd25ae57588.herokuapp.com';
   private cartItemsSubject = new BehaviorSubject<any[]>([]);
   private cartCountSubject = new BehaviorSubject<number>(0);
 
