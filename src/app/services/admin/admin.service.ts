@@ -11,7 +11,6 @@ export class AdminService {
 
   constructor(private http: HttpClient) { }
 
-  // User management methods
   getUsers(options: { page?: number; limit?: number; search?: string } = {}): Observable<any> {
     let params = new HttpParams();
 
@@ -79,31 +78,21 @@ export class AdminService {
   }
 
   addBook(bookData: any): Observable<any> {
-    // Create FormData object to handle file uploads
+    // Create FormData object for file upload
     const formData = new FormData();
-
-    // Add all text fields to FormData
+    
+    // Add text fields to FormData
     formData.append('title', bookData.title);
     formData.append('price', bookData.price.toString());
-
-    // Handle authors array
-    if (Array.isArray(bookData.authors)) {
-      bookData.authors.forEach((author: string, index: number) => {
-        formData.append(`authors[${index}]`, author);
-      });
-    } else if (typeof bookData.authors === 'string') {
-      formData.append('authors', bookData.authors);
-    }
-
+    formData.append('authors', bookData.authors); // Already JSON stringified
     formData.append('description', bookData.description || '');
     formData.append('stock', bookData.stock.toString());
-    formData.append('category', bookData.category || '');
-
-    // If there's a file, add it with the correct field name 'image'
-    if (bookData.image) {
+    
+    // Add file with the correct field name 'image'
+    if (bookData.image instanceof File) {
       formData.append('image', bookData.image);
     }
-
+    
     return this.http.post(`${this.apiUrl}/books`, formData).pipe(
       catchError(error => {
         console.error('Error adding book:', error);
@@ -114,28 +103,22 @@ export class AdminService {
 
   updateBook(id: string, bookData: any): Observable<any> {
     const formData = new FormData();
-
+    
+    // Add text fields to FormData
     formData.append('title', bookData.title);
     formData.append('price', bookData.price.toString());
-
-    // Handle authors array
-    if (Array.isArray(bookData.authors)) {
-      bookData.authors.forEach((author: string, index: number) => {
-        formData.append(`authors[${index}]`, author);
-      });
-    } else if (typeof bookData.authors === 'string') {
-      formData.append('authors', bookData.authors);
-    }
-
+    formData.append('authors', bookData.authors); // Already JSON stringified
     formData.append('description', bookData.description || '');
     formData.append('stock', bookData.stock.toString());
-    formData.append('category', bookData.category || '');
-
-    // If there's a new image file, add it
-    if (bookData.image) {
+    
+    // Add new image file if present
+    if (bookData.image instanceof File) {
       formData.append('image', bookData.image);
+    } else if (bookData.img) {
+      // Pass the existing image URL
+      formData.append('img', bookData.img);
     }
-
+    
     return this.http.put(`${this.apiUrl}/books/${id}`, formData).pipe(
       catchError(error => {
         console.error(`Error updating book ${id}:`, error);

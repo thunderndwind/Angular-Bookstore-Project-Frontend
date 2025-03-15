@@ -90,7 +90,7 @@ export class ManageBooksComponent implements OnInit {
     this.selectedFile = event.target.files[0] || null;
   }
 
-  async saveBook() {
+  saveBook() {
     if (!this.bookTitle || this.bookPrice === null) {
       this.error = 'Title and price are required';
       return;
@@ -99,38 +99,65 @@ export class ManageBooksComponent implements OnInit {
     this.isLoading = true;
     this.error = null;
 
-    try {
-      const authorsArray = this.bookAuthors
-        ? this.bookAuthors.split(',').map(author => author.trim())
-        : [];
+    // Parse authors from comma-separated string to array
+    const authorsArray = this.bookAuthors
+      ? this.bookAuthors.split(',').map(author => author.trim())
+      : [];
 
-      const bookData = {
-        title: this.bookTitle,
-        price: this.bookPrice,
-        authors: JSON.stringify(authorsArray),
-        description: this.bookDescription,
-        stock: this.bookStock,
-        img: this.bookImageUrl,
-        bookCover: this.selectedFile  // Add the file 
-      };
+    // Create book data object
+    const bookData: any = {
+      title: this.bookTitle,
+      price: this.bookPrice,
+      authors: JSON.stringify(authorsArray),
+      description: this.bookDescription,
+      stock: this.bookStock
+    };
 
-      if (this.isEditing && this.currentBookId) {
-        // Update existing book
-        await this.adminService.updateBook(this.currentBookId, bookData).toPromise();
-      } else {
-        // Add new book
-        await this.adminService.addBook(bookData).toPromise();
-      }
+    // Add image if selected
+    if (this.selectedFile) {
+      bookData.image = this.selectedFile;
+    } else if (this.bookImageUrl && this.isEditing) {
+      bookData.img = this.bookImageUrl;
+    }
 
-      this.loadBooks();
-      this.showForm = false;
-      this.resetForm();
-
-    } catch (err) {
-      this.error = this.isEditing ? 'Failed to update book' : 'Failed to add book';
-      console.error('Error saving book:', err);
-    } finally {
-      this.isLoading = false;
+    if (this.isEditing && this.currentBookId) {
+      // Update existing book
+      this.adminService.updateBook(this.currentBookId, bookData).subscribe({
+        next: (response) => {
+          if (response.error) {
+            this.error = response.message || 'Failed to update book';
+            this.isLoading = false;
+          } else {
+            this.loadBooks();
+            this.showForm = false;
+            this.resetForm();
+          }
+        },
+        error: (err) => {
+          this.error = 'Failed to update book';
+          console.error('Error updating book:', err);
+          this.isLoading = false;
+        }
+      });
+    } else {
+      // Add new book
+      this.adminService.addBook(bookData).subscribe({
+        next: (response) => {
+          if (response.error) {
+            this.error = response.message || 'Failed to add book';
+            this.isLoading = false;
+          } else {
+            this.loadBooks();
+            this.showForm = false;
+            this.resetForm();
+          }
+        },
+        error: (err) => {
+          this.error = 'Failed to add book';
+          console.error('Error adding book:', err);
+          this.isLoading = false;
+        }
+      });
     }
   }
 

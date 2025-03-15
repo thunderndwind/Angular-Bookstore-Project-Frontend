@@ -7,7 +7,7 @@ import { catchError } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class BookService {
-  private apiUrl = 'http://localhost:5000';
+  private apiUrl = 'http://localhost:5000/book';
 
   constructor(private http: HttpClient) { }
 
@@ -20,7 +20,7 @@ export class BookService {
   }
 
   getBookById(id: string): Observable<any> {
-    const url = `${this.apiUrl}/book/${id}`;
+    const url = `${this.apiUrl}/${id}`;
     console.log('Fetching book by ID:', url);
     return this.http.get<any>(url)
       .pipe(

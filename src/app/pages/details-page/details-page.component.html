@@ -8,7 +8,7 @@
         <div class="container">
           <div class="row">
             <div class="col-lg-4 text-center">
-              <img [src]="book.img || book.image || book.images" alt="Book Cover" class="img-fluid rounded shadow" style="max-width: 200px;">
+              <img [src]="book.img" alt="Book Cover" class="img-fluid rounded shadow" style="max-width: 200px;">
               <br>
               @if (book.stock > 10) {
                 <p class="badge bg-success mt-3">In stock</p>
