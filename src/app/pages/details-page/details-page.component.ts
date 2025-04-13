@@ -1,11 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { DetailsServices } from '../../services/details/details.service';
 import { Book, BookResponse } from '../../services/details/books';
 import { Review } from '../../services/details/review';
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute, Event, NavigationEnd } from '@angular/router';
 import { ViewportScroller } from '@angular/common';
-import { filter } from 'rxjs/operators';
 import { CartService } from '../../services/cart/cart.service';
 
 
@@ -15,7 +14,7 @@ import { CartService } from '../../services/cart/cart.service';
   templateUrl: './details-page.component.html',
   styleUrl: './details-page.component.css'
 })
-export class DetailsPageComponent implements OnInit {
+export class DetailsPageComponent {
   bookID!: string;
   book!: Book;
   rBooks: Book[] = [];
@@ -37,19 +36,14 @@ export class DetailsPageComponent implements OnInit {
     private viewportScroller: ViewportScroller,
     private cartService: CartService,
 
-  ) {}
+  ) { }
 
   ngOnInit() {
+
     this.route.paramMap.subscribe(params => {
-      this.bookID = params.get('id')!; 
+      this.viewportScroller.scrollToPosition([0, 0]);
+      this.bookID = params.get('id')!;
       this.loadBookDetails();
-    });
-    this.router.events
-    .pipe(
-      filter((event: Event): event is NavigationEnd => event instanceof NavigationEnd)
-    )
-    .subscribe(() => {
-      this.viewportScroller.scrollToPosition([0, 0]); 
     });
 
     this.loadUserData();
@@ -148,7 +142,7 @@ export class DetailsPageComponent implements OnInit {
   }
 
   addToCart(): void {
-    if(!this.user._id) {
+    if (!this.user._id) {
       this.router.navigate(['/login']);
     }
 
@@ -156,17 +150,15 @@ export class DetailsPageComponent implements OnInit {
       console.error('Cannot add to cart: book ID is missing');
       return;
     }
-    
+
     this.addingToCart = true;
     this.cartService.addToCart(this.book._id, this.quantity).subscribe({
       next: (response) => {
         console.log('Book added to cart:', this.book.title);
-        // Add success feedback if desired
         this.addingToCart = false;
       },
       error: (error) => {
         console.error('Error adding to cart:', error);
-        // Handle specific error cases
         if (error.status === 401) {
           this.router.navigate(['/login']);
         }
@@ -181,7 +173,7 @@ export class DetailsPageComponent implements OnInit {
   shareOnFacebook() {
     try {
       const url = encodeURIComponent(window.location.href);
-      const message = encodeURIComponent(`Hello, watch out this book "${this.book.title}" on Celeste website!`);
+      const message = `Hello, watch out this book "${this.book.title}" on Celeste website!`;
       const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${url}&quote=${message}`;
       window.open(facebookUrl, '_blank');
     } catch (error) {
@@ -189,28 +181,30 @@ export class DetailsPageComponent implements OnInit {
       alert('Oops! Something went wrong while trying to share on Facebook. Please try again.'); // Error message
     }
   }
-  
+
   shareOnWhatsApp() {
     try {
-      const message = encodeURIComponent(`Hello, watch out this book "${this.book.title}" on Celeste website!`);
+      const url = encodeURIComponent(window.location.href);
+      const message = `Hello, watch out this book "${this.book.title}" on Celeste website! \n ${url}`;
       const whatsappUrl = `https://wa.me/?text=${message}`;
       window.open(whatsappUrl, '_blank');
     } catch (error) {
       console.error('Failed to share on WhatsApp:', error);
-      alert('Oops! Something went wrong while trying to share on WhatsApp. Please try again.'); 
+      alert('Oops! Something went wrong while trying to share on WhatsApp. Please try again.');
     }
   }
-  
+
   shareOnOther() {
-    const message = `Hello, watch out this book "${this.book.title}" on Celeste website!`;
+    const url = encodeURIComponent(window.location.href);
+    const message = `Hello, watch out this book "${this.book.title}" on Celeste website! \n ${url}`;
     navigator.clipboard.writeText(message)
       .then(() => {
         alert('Message copied to clipboard!');
-      }) 
+      })
       .catch((error) => {
         console.error('Failed to copy:', error);
-        alert('Oops! Failed to copy the message. Please try again or copy it manually.'); 
+        alert('Oops! Failed to copy the message. Please try again or copy it manually.');
       });
-  
+
   }
 }

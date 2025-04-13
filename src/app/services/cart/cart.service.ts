@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
+import { AuthService } from '../auth/auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -14,8 +15,10 @@ export class CartService {
   cartItems$ = this.cartItemsSubject.asObservable();
   cartCount$ = this.cartCountSubject.asObservable();
 
-  constructor(private http: HttpClient) {
-    this.loadCartCount();
+  constructor(private http: HttpClient, private authService: AuthService) {
+    if (this.authService.isLoggedIn()) {
+      this.loadCartCount();
+    }
   }
 
   private getHeaders(): HttpHeaders {
@@ -27,17 +30,30 @@ export class CartService {
   }
 
   loadCartCount(): void {
+    if (!this.authService.isLoggedIn()) {
+      this.cartCountSubject.next(0);
+      return;
+    }
+
     this.getCartCount().subscribe({
       next: (response) => {
         this.cartCountSubject.next(response.cartSize);
       },
       error: (error) => {
         console.error('Error loading cart count:', error);
+        this.cartCountSubject.next(0);
       }
     });
   }
 
   getCart(): Observable<any> {
+    if (!this.authService.isLoggedIn()) {
+      return new Observable(observer => {
+        observer.next({ cartItems: [], totalItems: 0 });
+        observer.complete();
+      });
+    }
+
     return this.http.get(`${this.apiUrl}/cart`, { headers: this.getHeaders() })
       .pipe(
         tap((response: any) => {
@@ -48,10 +64,24 @@ export class CartService {
   }
 
   getCartCount(): Observable<any> {
+    if (!this.authService.isLoggedIn()) {
+      return new Observable(observer => {
+        observer.next({ cartSize: 0 });
+        observer.complete();
+      });
+    }
+
     return this.http.get(`${this.apiUrl}/cart/count`, { headers: this.getHeaders() });
   }
 
   addToCart(bookId: string, quantity: number = 1): Observable<any> {
+    if (!this.authService.isLoggedIn()) {
+      return new Observable(observer => {
+        observer.next({ cartSize: 0 });
+        observer.complete();
+      });
+    }
+
     return this.http.post(`${this.apiUrl}/cart/add`, { bookId, quantity }, { headers: this.getHeaders() })
       .pipe(
         tap((response: any) => {
@@ -61,6 +91,13 @@ export class CartService {
   }
 
   updateCartItem(bookId: string, quantity: number): Observable<any> {
+    if (!this.authService.isLoggedIn()) {
+      return new Observable(observer => {
+        observer.next({ cartSize: 0 });
+        observer.complete();
+      });
+    }
+
     return this.http.put(`${this.apiUrl}/cart/update`, { bookId, quantity }, { headers: this.getHeaders() })
       .pipe(
         tap((response: any) => {
@@ -71,6 +108,13 @@ export class CartService {
   }
 
   removeFromCart(bookId: string): Observable<any> {
+    if (!this.authService.isLoggedIn()) {
+      return new Observable(observer => {
+        observer.next({ cartSize: 0 });
+        observer.complete();
+      });
+    }
+
     return this.http.delete(`${this.apiUrl}/cart/remove/${bookId}`, { headers: this.getHeaders() })
       .pipe(
         tap((response: any) => {
@@ -81,6 +125,13 @@ export class CartService {
   }
 
   clearCart(): Observable<any> {
+    if (!this.authService.isLoggedIn()) {
+      return new Observable(observer => {
+        observer.next({ cartSize: 0 });
+        observer.complete();
+      });
+    }
+
     return this.http.delete(`${this.apiUrl}/cart/clear`, { headers: this.getHeaders() })
       .pipe(
         tap((response: any) => {
