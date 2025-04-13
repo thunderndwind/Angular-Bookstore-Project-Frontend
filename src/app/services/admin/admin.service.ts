@@ -14,7 +14,6 @@ export class AdminService {
   getUsers(options: { page?: number; limit?: number; search?: string } = {}): Observable<any> {
     let params = new HttpParams();
 
-    // Set defaults if not provided
     const page = options.page || 1;
     const limit = options.limit || 10;
 
@@ -42,7 +41,6 @@ export class AdminService {
     );
   }
 
-  // Book management methods
   getBooks(options: {
     page?: number;
     limit?: number;
