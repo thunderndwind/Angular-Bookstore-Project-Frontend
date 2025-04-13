@@ -1,170 +1,219 @@
 <main>
-    @if (errorMessage) {
-        <div class="alert alert-danger">
-            {{ errorMessage }}
-        </div>
-    }
-    @else {
-        <div class="container">
-          <div class="row">
-            <div class="col-lg-4 text-center">
-              <img [src]="book.img" alt="Book Cover" class="img-fluid rounded shadow" style="max-width: 200px;">
-              <br>
-              @if (book.stock > 10) {
-                <p class="badge bg-success mt-3">In stock</p>
-              }
-              @else if (book.stock <= 10 && book.stock > 0) {
-                <p class="badge bg-warning text-dark mt-3">Low stock</p>
-              }
-              @else {
-                <p class="badge bg-danger mt-3">Out of stock</p>
-              }
-            </div>
-      
-            <!-- Book Content -->
-            <div class="col-lg-4 content">
-              <h1 class="text-dark">{{book.title}}</h1> <!-- Dark text for better contrast -->
-              <p class="lead text-dark">{{book.authors}}</p> <!-- Dark text for better contrast -->
-              @if (book.rate) {
-                <p class="text-warning h4">
-                  {{Math.round(book.rate) > book.rate ? '★'.repeat(book.rate) +'⯪' : '★'.repeat(book.rate)}}
-                  <span class="text-secondary">{{book.rate}} based on {{book.reviews.length}} reviews</span> <!-- Secondary text for subtlety -->
-                </p>      
-              }
-              <!-- Social Media Icons -->
-      
-              <p class="text-dark mt-3">{{book.description}}</p> <!-- Dark text for better contrast -->
-              <hr class="border-secondary">
+  @if (errorMessage) {
+  <div class="alert alert-danger">
+    {{ errorMessage }}
+  </div>
+  }
+  @else {
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-4 text-center">
+        <img [src]="book.img" alt="Book Cover" class="img-fluid rounded shadow"
+          style="max-width: 200px;">
+        <br>
+        @if (book.stock > 10) {
+        <p class="badge bg-success mt-3">In stock</p>
+        }
+        @else if (book.stock <= 10 && book.stock > 0) {
+        <p class="badge bg-warning text-dark mt-3">Low stock</p>
+        }
+        @else {
+        <p class="badge bg-danger mt-3">Out of stock</p>
+        }
+      </div>
 
-              <!-- Book Info -->
-              <div class="row info">
-                <div class="d-flex justify-content-center my-4">
-                      <i class="fa-brands fa-facebook fa-2xl mx-3" style="color: #1877F2; cursor: pointer;" (click)="shareOnFacebook()"></i> <!-- Facebook blue -->
-                      <i class="fa-brands fa-whatsapp fa-2xl mx-3" style="color: #25D366; cursor: pointer;" (click)="shareOnWhatsApp()"></i> <!-- WhatsApp green -->
-                      <i class="fa-solid fa-share fa-2xl mx-3" style="color: #6c757d; cursor: pointer;" (click)="shareOnOther()"></i> <!-- Gray for share icon -->
-                    <!-- Dark text for better contrast -->
-                </div>
-              </div>
-              <hr class="border-secondary">
+      <!-- Book Content -->
+      <div class="col-lg-4 content">
+        <h1 class="text-dark">{{book.title}}</h1>
+        <!-- Dark text for better contrast -->
+        <p class="lead text-dark">{{book.authors}}</p>
+        <!-- Dark text for better contrast -->
+        @if (book.rate) {
+        <p class="text-warning h4">
+          {{Math.round(book.rate) > book.rate ? '★'.repeat(book.rate) +'⯪' :
+          '★'.repeat(book.rate)}}
+          <span class="text-secondary">{{book.rate}} based on
+            {{book.reviews.length}} reviews</span>
+          <!-- Secondary text for subtlety -->
+        </p>
+        }
 
-            </div>
-      
-            <!-- Book Price & Info -->
-            <div class="col-lg-4 price">
-              <div class="bg-light p-3 rounded shadow-sm"> <!-- Light background with subtle shadow -->
-                <div class="d-flex justify-content-between">
-                  <div>
-                    <h4 class="text-danger">{{book.price.toFixed(2)+' $'}}</h4> <!-- danger color for price -->
-                    <h6 class="text-muted text-decoration-line-through"> <!-- Muted text for old price -->
-                      {{(book.price * (10/100) + book.price).toFixed(2)+' $'}}
-                    </h6>
-                  </div>
-                  <p class="text-muted w-50 my-2"><b>10% discount for a limited time</b></p> <!-- Muted text for subtlety -->
-                </div>
-                <hr class="border-secondary">
-                <p class="text-dark"><i class="fa-solid fa-truck-fast text-danger"></i>&nbsp;&nbsp; Free shipping for limited time</p> <!-- danger color for icons -->
-                <p class="text-dark"><i class="fa-solid fa-box-open text-danger"></i>&nbsp;&nbsp; Get your order within 3 days</p> <!-- danger color for icons -->
-                <p class="text-dark"><i class="fa-solid fa-shop text-danger"></i>&nbsp;&nbsp; Delivery is available to all cities</p> <!-- danger color for icons -->
-                <hr class="border-secondary">
-                <div class="quantity-selector d-flex justify-content-center">
-                    <button class="decrement btn btn-outline-secondary" (click)="decrementQty()">-</button> <!-- Outline button for quantity -->
-                    <input type="number" value="{{quantity}}" class="quantity-input form-control text-center" id="quantity" disabled> <!-- Styled input -->
-                    <button class="increment btn btn-outline-secondary" (click)="incrementQty()">+</button> <!-- Outline button for quantity -->
-                </div>
-                <button class="btn btn-danger w-100 mt-2" (click)="addToCart()">Add to Cart</button> <!-- danger button for CTA -->
-              </div>
-            </div>
-          </div>
-      
-          <hr class="border-secondary">
-      
-          <!-- Reviews Section -->
-          <div class="row">
-            <div class="col-12">
-              <h2 class="text-dark">Reviews</h2> <!-- Dark text for better contrast -->
-              <div class="d-flex flex-wrap justify-content-left">
-                @if (!book.reviews || book.reviews.length === 0) {
-                  <p class="text-muted">No reviews yet!</p> <!-- Muted text for subtlety -->
-                }
-                @else {
-                  @for (review of book.reviews; track $index) {
-                    @if (review.comment) {
-                      <div class="card bg-light text-dark m-2 shadow-sm" style="width: 18rem;"> <!-- Light card with shadow -->
-                        <div class="card-body">
-                          <h5 class="card-title">{{review.name}}</h5>
-                          <h6 class="card-subtitle mb-2 text-warning">
-                            {{'★'.repeat(review.rating)}}{{'☆'.repeat(5 - review.rating)}}
-                          </h6>
-                          <p class="card-text">{{review.comment}}</p>
-                        </div>
-                      </div>
-                    }
-                  }
-                }
-            </div>
-      
-                <!-- User Review Section -->
-                <div class="card bg-light text-dark m-2 shadow-sm" style="width: 18rem;"> <!-- Light card with shadow -->
-                  <div class="card-body">
-                    <h5 class="card-title">{{user.name}}</h5>
-                    @if (userReview._id) {
-                      <h6 class="card-subtitle mb-2 text-warning">
-                        {{'★'.repeat(userReview.rating)}}{{'☆'.repeat(5 - userReview.rating)}}
-                      </h6>
-                      @if (userReview.comment) {
-                        <p class="card-text">{{userReview.comment}}</p>
-                      }
-                      <button class="btn btn-primary btn-sm" (click)="updateForm()">Update</button> <!-- danger button -->
-                      <button class="btn btn-danger btn-sm" (click)="deleteReview()">Remove</button> <!-- Danger button -->
-                    }
-                    @else {
-                      <p class="text-muted">No review yet!</p> <!-- Muted text for subtlety -->
-                      <button class="btn btn-primary btn-sm" (click)="updateForm()">Add Review</button> <!-- danger button -->
-                    }
-      
-                    <!-- Review Form (Hidden by Default) -->
-                    @if (showReviewForm) {
-                      <form class="mt-3" (ngSubmit)="submitReview()" #reviewForm="ngForm">
-                        <div class="mb-2">
-                          <select class="form-select bg-light text-dark border-secondary" [(ngModel)]="userReview.rating" name="rate" required> <!-- Light background with dark text -->
-                            <option value="5">⭐⭐⭐⭐⭐ - Excellent</option>
-                            <option value="4">⭐⭐⭐⭐ - Very Good</option>
-                            <option value="3">⭐⭐⭐ - Average</option>
-                            <option value="2">⭐⭐ - Poor</option>
-                            <option value="1">⭐ - Terrible</option>
-                          </select>
-                        </div>
-                        <div class="mb-2">
-                          <textarea class="form-control bg-light text-dark border-secondary" [(ngModel)]="userReview.comment" name="comment" rows="3" placeholder="Write your review here..." required></textarea> <!-- Light background with dark text -->
-                        </div>
-                        <button type="submit" class="btn btn-primary w-100 btn-sm">Submit Review</button> <!-- danger button -->
-                      </form>
-                    }
-                  </div>
-                </div>
-            </div>
-          </div>
-      
-          <hr class="border-secondary">
-      
-          <!-- Related Books Section -->
-          <h3 class="text-dark">Related Books</h3> <!-- Dark text for better contrast -->
-          <div class="container">
-            <div class="row justify-content-center g-4 related-books">
-              @for (book of rBooks; track $index) {
-                <div class="col-lg-3 col-md-4 col-6 d-flex justify-content-center">
-                  <div class="card h-100 bg-light text-dark shadow-sm"> <!-- Light card with shadow -->
-                    <img [src]="book.img || book.image || book.images" class="card-img-top" alt="Book Cover">
-                    <div class="card-body d-flex flex-column">
-                      <h5 class="card-title">{{book.title}}</h5>
-                      <p class="card-text">By: {{book.authors}}</p>
-                      <button class="btn btn-danger mt-auto" (click)="navigateToBook(book._id)">View Details</button> <!-- danger button -->
-                    </div>
-                  </div>
-                </div>
-              }
-            </div>
+        <p class="text-dark mt-3">{{book.description}}</p>
+        <!-- Dark text for better contrast -->
+        <hr class="border-secondary">
+
+        <div class="row info">
+          <div class="d-flex justify-content-center my-4">
+            <i class="fa-brands fa-facebook fa-2xl mx-3"
+              style="color: #1877F2; cursor: pointer;"
+              (click)="shareOnFacebook()"></i> <!-- Facebook blue -->
+            <i class="fa-brands fa-whatsapp fa-2xl mx-3"
+              style="color: #25D366; cursor: pointer;"
+              (click)="shareOnWhatsApp()"></i> <!-- WhatsApp green -->
+            <i class="fa-solid fa-share fa-2xl mx-3"
+              style="color: #6c757d; cursor: pointer;"
+              (click)="shareOnOther()"></i> <!-- Gray for share icon -->
           </div>
         </div>
-}
+        <hr class="border-secondary">
+        <p class="text-center stock">Stock : {{ book.stock }}</p>
+
+      </div>
+
+      <!-- Book Price & Info -->
+      <div class="col-lg-4 price">
+        <div class="bg-light p-3 rounded shadow-sm">
+          <!-- Light background with subtle shadow -->
+          <div class="d-flex justify-content-between">
+            <div>
+              <h4 class="text-danger">{{book.price.toFixed(2)+' $'}}</h4>
+              <!-- danger color for price -->
+              <h6 class="text-muted text-decoration-line-through">
+                <!-- Muted text for old price -->
+                {{(book.price * (10/100) + book.price).toFixed(2)+' $'}}
+              </h6>
+            </div>
+            <p class="text-muted w-50 my-2"><b>10% discount for a limited
+                time</b></p> <!-- Muted text for subtlety -->
+          </div>
+          <hr class="border-secondary">
+          <p class="text-dark"><i
+              class="fa-solid fa-truck-fast text-danger"></i>&nbsp;&nbsp; Free
+            shipping for limited time</p> <!-- danger color for icons -->
+          <p class="text-dark"><i
+              class="fa-solid fa-box-open text-danger"></i>&nbsp;&nbsp; Get your
+            order within 3 days</p> <!-- danger color for icons -->
+          <p class="text-dark"><i
+              class="fa-solid fa-shop text-danger"></i>&nbsp;&nbsp; Delivery is
+            available to all cities</p> <!-- danger color for icons -->
+          <hr class="border-secondary">
+          <div class="quantity-selector d-flex justify-content-center">
+            <button class="decrement btn btn-outline-secondary"
+              (click)="decrementQty()">-</button>
+            <!-- Outline button for quantity -->
+            <input type="number" value="{{quantity}}"
+              class="quantity-input form-control text-center" id="quantity"
+              disabled> <!-- Styled input -->
+            <button class="increment btn btn-outline-secondary"
+              (click)="incrementQty()">+</button>
+            <!-- Outline button for quantity -->
+          </div>
+          <button class="btn btn-danger w-100 mt-2" (click)="addToCart()">Add to
+            Cart</button> <!-- danger button for CTA -->
+        </div>
+      </div>
+    </div>
+
+    <hr class="border-secondary">
+
+    <!-- Reviews Section -->
+    <div class="row reviews">
+      <div class="col-12">
+        <h2 class="text-dark">Reviews</h2>
+        <!-- Dark text for better contrast -->
+        <div class="d-flex flex-wrap justify-content-left">
+          @if (!book.reviews || book.reviews.length === 0) {
+          <p class="text-muted">No reviews yet!</p>
+          <!-- Muted text for subtlety -->
+          }
+          @else {
+          @for (review of book.reviews; track $index) {
+          @if (review.comment) {
+          <div class="card bg-light text-dark m-2 shadow-sm"
+            style="width: 18rem;"> <!-- Light card with shadow -->
+            <div class="card-body">
+              <h5 class="card-title">{{review.name}}</h5>
+              <h6 class="card-subtitle mb-2 text-warning">
+                {{'★'.repeat(review.rating)}}{{'☆'.repeat(5 - review.rating)}}
+              </h6>
+              <p class="card-text">{{review.comment}}</p>
+            </div>
+          </div>
+          }
+          }
+          }
+        </div>
+
+        <!-- User Review Section -->
+        <div class="card bg-light text-dark m-2 shadow-sm"
+          style="width: 18rem;"> <!-- Light card with shadow -->
+          <div class="card-body">
+            <h5 class="card-title">{{user.name}}</h5>
+            @if (userReview._id) {
+            <h6 class="card-subtitle mb-2 text-warning">
+              {{'★'.repeat(userReview.rating)}}{{'☆'.repeat(5 -
+              userReview.rating)}}
+            </h6>
+            @if (userReview.comment) {
+            <p class="card-text">{{userReview.comment}}</p>
+            }
+            <button class="btn btn-primary btn-sm  me-2"
+              (click)="updateForm()">Update</button> <!-- danger button -->
+            <button class="btn btn-danger btn-sm"
+              (click)="deleteReview()">Remove</button> <!-- Danger button -->
+            }
+            @else {
+            <p class="text-muted">No review yet!</p>
+            <!-- Muted text for subtlety -->
+            <button class="btn btn-primary btn-sm" (click)="updateForm()">Add
+              Review</button> <!-- danger button -->
+            }
+
+            <!-- Review Form (Hidden by Default) -->
+            @if (showReviewForm) {
+            <form class="mt-3" (ngSubmit)="submitReview()" #reviewForm="ngForm">
+              <div class="mb-2">
+                <select class="form-select bg-light text-dark border-secondary"
+                  [(ngModel)]="userReview.rating" name="rate" required>
+                  <!-- Light background with dark text -->
+                  <option value="5">⭐⭐⭐⭐⭐ - Excellent</option>
+                  <option value="4">⭐⭐⭐⭐ - Very Good</option>
+                  <option value="3">⭐⭐⭐ - Average</option>
+                  <option value="2">⭐⭐ - Poor</option>
+                  <option value="1">⭐ - Terrible</option>
+                </select>
+              </div>
+              <div class="mb-2">
+                <textarea
+                  class="form-control bg-light text-dark border-secondary"
+                  [(ngModel)]="userReview.comment" name="comment" rows="3"
+                  placeholder="Write your review here..." required></textarea>
+                <!-- Light background with dark text -->
+              </div>
+              <button type="submit" class="btn btn-primary w-100 btn-sm">Submit
+                Review</button> <!-- danger button -->
+            </form>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="border-secondary">
+
+    <!-- Related Books Section -->
+    <h3 class="text-dark">Related Books</h3>
+    <!-- Dark text for better contrast -->
+    <div class="container">
+      <div class="row justify-content-center g-4 related-books">
+        @for (book of rBooks; track $index) {
+        <div class="col-lg-3 col-md-4 col-6 d-flex justify-content-center">
+          <div class="card h-100 bg-light text-dark shadow-sm"
+            style="width:200px;"> <!-- Light card with shadow -->
+            <img [src]="book.img || book.image || book.images"
+              class="card-img-top" alt="Book Cover">
+            <div class="card-body d-flex flex-column">
+              <h5 class="card-title">{{book.title}}</h5>
+              <p class="card-text">By: {{book.authors}}</p>
+              <button class="btn btn-danger mt-auto"
+                (click)="navigateToBook(book._id)">View Details</button>
+              <!-- danger button -->
+            </div>
+          </div>
+        </div>
+        }
+      </div>
+    </div>
+  </div>
+  }
 </main>
