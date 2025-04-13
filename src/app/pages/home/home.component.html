@@ -8,15 +8,9 @@
       </div>
   </div>
 </header>
+
 <div class="main-content">
   <div class="container">
-    <div class="search-section">
-      <!-- <div class="search-container">
-        <input type="text" placeholder="Search books..." class="search-input">
-        <button class="search-button">Search</button>
-      </div> -->
-    </div>
-
     <!-- Loading and Error States -->
     <div *ngIf="loading" class="loading-container">
       <div class="spinner-border text-primary" role="status">
@@ -28,36 +22,138 @@
       {{ error }}
     </div>
 
-  <!-- Featured Books Section -->
-  <section class="featured-books">
-    <h2 class="section-title">Featured Books</h2>
-    <div class="container">
+    <!-- Featured Books Section -->
+    <section class="featured-books">
+      <div class="section-header d-flex justify-content-between align-items-center mb-4">
+        <h2 class="section-title mb-0">Featured Books</h2>
+      </div>
+
       <div class="row">
-        <div *ngFor="let book of featuredBooks" class="col-lg-4 col-md-6 col-sm-12 mb-4">
+        <div *ngFor="let book of featuredBooks" class="col-lg-4 col-md-6 col-sm-12 mb-4 animate__animated animate__fadeIn">
           <app-book-card [book]="book"></app-book-card>
         </div>
-        <div *ngIf="featuredBooks.length === 0 && !loading" class="no-books">
+        <div *ngIf="featuredBooks.length === 0 && !loading" class="col-12 no-books">
           No featured books available at this time.
         </div>
       </div>
-    </div>
-  </section>
 
+      <!-- Featured Books Pagination -->
+      <nav *ngIf="featuredTotalPages > 1" class="mt-4" aria-label="Featured books pagination">
+        <ul class="pagination pagination-lg justify-content-center">
+          <!-- Previous button -->
+          <li class="page-item" [class.disabled]="featuredCurrentPage === 0">
+            <a class="page-link" href="javascript:void(0)" aria-label="Previous" (click)="goToFeaturedPage(featuredCurrentPage - 1)">
+              <span aria-hidden="true">&laquo;</span>
+            </a>
+          </li>
+          
+          <!-- Page numbers -->
+          <ng-container *ngIf="featuredTotalPages <= 5">
+            <li *ngFor="let page of range(0, featuredTotalPages - 1)" class="page-item" [class.active]="page === featuredCurrentPage">
+              <a class="page-link" href="javascript:void(0)" (click)="goToFeaturedPage(page)">{{ page + 1 }}</a>
+            </li>
+          </ng-container>
+          
+          <ng-container *ngIf="featuredTotalPages > 5">
+            <li class="page-item" [class.active]="featuredCurrentPage === 0">
+              <a class="page-link" href="javascript:void(0)" (click)="goToFeaturedPage(0)">1</a>
+            </li>
+            
+            <!-- Show ellipsis if not near start -->
+            <li *ngIf="featuredCurrentPage > 2" class="page-item disabled">
+              <a class="page-link" href="javascript:void(0)">...</a>
+            </li>
+            
+            <!-- Current page and neighbors -->
+            <ng-container *ngFor="let page of range(Math.max(1, featuredCurrentPage - 1), Math.min(featuredCurrentPage + 1, featuredTotalPages - 2))">
+              <li class="page-item" [class.active]="page === featuredCurrentPage">
+                <a class="page-link" href="javascript:void(0)" (click)="goToFeaturedPage(page)">{{ page + 1 }}</a>
+              </li>
+            </ng-container>
+            
+            <!-- Show ellipsis if not near end -->
+            <li *ngIf="featuredCurrentPage < featuredTotalPages - 3" class="page-item disabled">
+              <a class="page-link" href="javascript:void(0)">...</a>
+            </li>
+            
+            <!-- Last page always shown -->
+            <li class="page-item" [class.active]="featuredCurrentPage === featuredTotalPages - 1">
+              <a class="page-link" href="javascript:void(0)" (click)="goToFeaturedPage(featuredTotalPages - 1)">{{ featuredTotalPages }}</a>
+            </li>
+          </ng-container>
+          
+          <!-- Next button -->
+          <li class="page-item" [class.disabled]="featuredCurrentPage === featuredTotalPages - 1">
+            <a class="page-link" href="javascript:void(0)" aria-label="Next" (click)="goToFeaturedPage(featuredCurrentPage + 1)">
+              <span aria-hidden="true">&raquo;</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </section>
 
-<!-- New Arrivals Section -->
-<section class="new-arrivals">
-  <h2 class="section-title">New Arrivals</h2>
-  <div class="container">
-    <div class="row">
-      <div *ngFor="let book of newArrivals" class="col-lg-4 col-md-6 col-sm-12 mb-4">
-        <app-book-card [book]="book"></app-book-card>
+    <!-- New Arrivals Section -->
+    <section class="new-arrivals mt-5">
+      <div class="section-header d-flex justify-content-between align-items-center mb-4">
+        <h2 class="section-title mb-0">New Arrivals</h2>
       </div>
-      <div *ngIf="newArrivals.length === 0 && !loading" class="no-books">
-        No new arrivals available at this time.
-      </div>
-    </div>
-  </div>
-</section>
 
+      <div class="row">
+        <div *ngFor="let book of newArrivals" class="col-lg-4 col-md-6 col-sm-12 mb-4 animate__animated animate__fadeIn">
+          <app-book-card [book]="book"></app-book-card>
+        </div>
+        <div *ngIf="newArrivals.length === 0 && !loading" class="col-12 no-books">
+          No new arrivals available at this time.
+        </div>
+      </div>
+
+      <!-- New Arrivals Pagination -->
+      <nav *ngIf="newTotalPages > 1" class="mt-4" aria-label="New arrivals pagination">
+        <ul class="pagination pagination-lg justify-content-center">
+          <!-- Previous button -->
+          <li class="page-item" [class.disabled]="newCurrentPage === 0">
+            <a class="page-link" href="javascript:void(0)" aria-label="Previous" (click)="goToNewPage(newCurrentPage - 1)">
+              <span aria-hidden="true">&laquo;</span>
+            </a>
+          </li>
+          
+          <ng-container *ngIf="newTotalPages <= 5">
+            <li *ngFor="let page of range(0, newTotalPages - 1)" class="page-item" [class.active]="page === newCurrentPage">
+              <a class="page-link" href="javascript:void(0)" (click)="goToNewPage(page)">{{ page + 1 }}</a>
+            </li>
+          </ng-container>
+          
+          <ng-container *ngIf="newTotalPages > 5">
+            <li class="page-item" [class.active]="newCurrentPage === 0">
+              <a class="page-link" href="javascript:void(0)" (click)="goToNewPage(0)">1</a>
+            </li>
+            
+            <li *ngIf="newCurrentPage > 2" class="page-item disabled">
+              <a class="page-link" href="javascript:void(0)">...</a>
+            </li>
+            
+            <ng-container *ngFor="let page of range(Math.max(1, newCurrentPage - 1), Math.min(newCurrentPage + 1, newTotalPages - 2))">
+              <li class="page-item" [class.active]="page === newCurrentPage">
+                <a class="page-link" href="javascript:void(0)" (click)="goToNewPage(page)">{{ page + 1 }}</a>
+              </li>
+            </ng-container>
+            
+            <li *ngIf="newCurrentPage < newTotalPages - 3" class="page-item disabled">
+              <a class="page-link" href="javascript:void(0)">...</a>
+            </li>
+            
+            <li class="page-item" [class.active]="newCurrentPage === newTotalPages - 1">
+              <a class="page-link" href="javascript:void(0)" (click)="goToNewPage(newTotalPages - 1)">{{ newTotalPages }}</a>
+            </li>
+          </ng-container>
+          
+          <li class="page-item" [class.disabled]="newCurrentPage === newTotalPages - 1">
+            <a class="page-link" href="javascript:void(0)" aria-label="Next" (click)="goToNewPage(newCurrentPage + 1)">
+              <span aria-hidden="true">&raquo;</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </section>
   </div>
 </div>
