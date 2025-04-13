@@ -155,6 +155,74 @@
     <div *ngIf="!isLoading && books.length === 0" class="alert alert-info">
       No books found. Add a new book to get started.
     </div>
+    
+    <!-- Pagination Controls -->
+    <div *ngIf="!isLoading && books.length > 0" class="d-flex justify-content-between align-items-center mt-3">
+      <div>
+        <select class="form-select form-select-sm" style="width: auto;" [(ngModel)]="itemsPerPage" (change)="changeItemsPerPage(itemsPerPage)">
+          <option [ngValue]="5">5 per page</option>
+          <option [ngValue]="10">10 per page</option>
+          <option [ngValue]="25">25 per page</option>
+          <option [ngValue]="50">50 per page</option>
+        </select>
+      </div>
+      
+      <div>
+        <span class="me-2">
+          Showing {{ (currentPage - 1) * itemsPerPage + 1 }} to {{ Math.min(currentPage * itemsPerPage, totalItems) }} of {{ totalItems }} books
+        </span>
+      </div>
+      
+      <nav aria-label="Book pagination">
+        <ul class="pagination pagination-sm mb-0">
+          <li class="page-item" [class.disabled]="currentPage === 1">
+            <button class="page-link" (click)="previousPage()" aria-label="Previous">
+              <span aria-hidden="true">&laquo;</span>
+            </button>
+          </li>
+          
+          <ng-container *ngIf="totalPages <= 7">
+            <li *ngFor="let page of [].constructor(totalPages); let i = index" class="page-item" [class.active]="currentPage === i + 1">
+              <button class="page-link" (click)="goToPage(i + 1)">{{ i + 1 }}</button>
+            </li>
+          </ng-container>
+          
+          <ng-container *ngIf="totalPages > 7">
+            <!-- First page -->
+            <li class="page-item" [class.active]="currentPage === 1">
+              <button class="page-link" (click)="goToPage(1)">1</button>
+            </li>
+            
+            <!-- Ellipsis if current page is > 3 -->
+            <li *ngIf="currentPage > 3" class="page-item disabled">
+              <span class="page-link">...</span>
+            </li>
+            
+            <!-- Pages around current page -->
+            <ng-container *ngFor="let i of [-1, 0, 1]">
+              <li *ngIf="currentPage + i > 1 && currentPage + i < totalPages" class="page-item" [class.active]="i === 0">
+                <button class="page-link" (click)="goToPage(currentPage + i)">{{ currentPage + i }}</button>
+              </li>
+            </ng-container>
+            
+            <!-- Ellipsis if current page is < total pages - 2 -->
+            <li *ngIf="currentPage < totalPages - 2" class="page-item disabled">
+              <span class="page-link">...</span>
+            </li>
+            
+            <!-- Last page -->
+            <li class="page-item" [class.active]="currentPage === totalPages">
+              <button class="page-link" (click)="goToPage(totalPages)">{{ totalPages }}</button>
+            </li>
+          </ng-container>
+          
+          <li class="page-item" [class.disabled]="currentPage === totalPages">
+            <button class="page-link" (click)="nextPage()" aria-label="Next">
+              <span aria-hidden="true">&raquo;</span>
+            </button>
+          </li>
+        </ul>
+      </nav>
+    </div>
   </div>
 </div>
-

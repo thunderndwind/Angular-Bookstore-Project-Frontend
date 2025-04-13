@@ -53,36 +53,133 @@
     @if (isEditMode) {
       <div class="card p-4 shadow-sm">
         <h3 class="card-title text-center mb-4">Edit Profile</h3>
-        <form (ngSubmit)="saveChanges()">
+        <form #profileForm="ngForm" (ngSubmit)="saveChanges()">
+          <!-- First Name -->
           <div class="mb-3">
             <label for="firstName" class="form-label">First Name:</label>
-            <input id="firstName" [(ngModel)]="user.firstName" name="firstName" class="form-control" required>
+            <input id="firstName" 
+                   [(ngModel)]="user.firstName" 
+                   name="firstName" 
+                   class="form-control" 
+                   required
+                   minlength="2"
+                   maxlength="50"
+                   pattern="[a-zA-Z ]*"
+                   #firstName="ngModel">
+            @if(firstName.invalid && firstName.touched){
+              @if(firstName.errors?.['required']){
+                <div class="text-danger">First name is required</div>
+              }
+              @else if(firstName.errors?.['minlength']){
+                <div class="text-danger">Minimum 2 characters required</div>
+              }
+              @else if(firstName.errors?.['pattern']){
+                <div class="text-danger">Only letters and spaces allowed</div>
+              }
+            }
           </div>
-
+    
+          <!-- Last Name -->
           <div class="mb-3">
             <label for="lastName" class="form-label">Last Name:</label>
-            <input id="lastName" [(ngModel)]="user.lastName" name="lastName" class="form-control" required>
+            <input id="lastName" 
+                   [(ngModel)]="user.lastName" 
+                   name="lastName" 
+                   class="form-control" 
+                   required
+                   minlength="2"
+                   maxlength="50"
+                   pattern="[a-zA-Z ]*"
+                   #lastName="ngModel">
+            @if(lastName.invalid && lastName.touched){
+              @if(lastName.errors?.['required']){
+                <div class="text-danger">Last name is required</div>
+              }
+              @else if(lastName.errors?.['minlength']){
+                <div class="text-danger">Minimum 2 characters required</div>
+              }
+              @else if(lastName.errors?.['pattern']){
+                <div class="text-danger">Only letters and spaces allowed</div>
+              }
+            }
           </div>
-
+    
+          <!-- Address Section -->
           <div class="mb-3">
             <label for="newAddress" class="form-label">Add New Address:</label>
             <div class="row g-3">
               <div class="col-md-3">
-                <input [(ngModel)]="newAddress.street" class="form-control" name="street" placeholder="Street">
+                <input [(ngModel)]="newAddress.street" 
+                       class="form-control" 
+                       name="street" 
+                       placeholder="Street"
+                       required
+                       #street="ngModel">
+                @if(street.invalid && street.touched){
+                  <div class="text-danger">Street is required</div>
+                }
               </div>
               <div class="col-md-3">
-                <input [(ngModel)]="newAddress.city" class="form-control" name="city" placeholder="City">
+                <input [(ngModel)]="newAddress.city" 
+                       class="form-control" 
+                       name="city" 
+                       placeholder="City"
+                       required
+                       pattern="[a-zA-Z ]*"
+                       #city="ngModel">
+                @if(city.invalid && city.touched){
+                  @if(city.errors?.['required']){
+                    <div class="text-danger">City is required</div>
+                  }
+                  @else if(city.errors?.['pattern']){
+                    <div class="text-danger">Only letters and spaces allowed</div>
+                  }
+                }
               </div>
               <div class="col-md-3">
-                <input [(ngModel)]="newAddress.governorate" class="form-control" name="governorate" placeholder="Governorate">
+                <input [(ngModel)]="newAddress.governorate" 
+                       class="form-control" 
+                       name="governorate" 
+                       placeholder="Governorate"
+                       required
+                       pattern="[a-zA-Z ]*"
+                       #governorate="ngModel">
+                @if(governorate.invalid && governorate.touched){
+                  @if(governorate.errors?.['required']){
+                    <div class="text-danger">Governorate is required</div>
+                  }
+                  @else if(governorate.errors?.['pattern']){
+                    <div class="text-danger">Only letters and spaces allowed</div>
+                  }
+                }
               </div>
               <div class="col-md-3">
-                <input [(ngModel)]="newAddress.postalCode" class="form-control" name="postalCode" placeholder="Postal Code">
+                <input [(ngModel)]="newAddress.postalCode" 
+                       class="form-control" 
+                       name="postalCode" 
+                       placeholder="Postal Code"
+                       required
+                       pattern="[0-9]{5}"
+                       #postalCode="ngModel">
+                @if(postalCode.invalid && postalCode.touched){
+                  @if(postalCode.errors?.['required']){
+                    <div class="text-danger">Postal code is required</div>
+                  }
+                  @else if(postalCode.errors?.['pattern']){
+                    <div class="text-danger">Must be 5 digits</div>
+                  }
+                }
               </div>
             </div>
-            <button type="button" class="btn btn-secondary mt-2" (click)="addAddress()">Add Address</button>
+            <button type="button" 
+                    class="btn btn-secondary mt-2" 
+                    (click)="addAddress()"
+                    [disabled]="!newAddress.street || !newAddress.city || !newAddress.governorate || !newAddress.postalCode">
+              Add Address
+            </button>
           </div>
-
+    
+          <!-- Existing Addresses List -->
           <div class="mb-3">
             <ul class="list-group list-group-flush mt-3">
               @for (address of user?.profile?.addresses; track $index) {
@@ -93,11 +190,25 @@
               }
             </ul>
           </div>
-
+    
+          <!-- Phone Numbers -->
           <div class="mb-3">
             <label for="newPhoneNumber" class="form-label">Phone Numbers:</label>
-            <input id="newPhoneNumber" [(ngModel)]="newPhoneNumber" name="newPhoneNumber" class="form-control">
-            <button type="button" class="btn btn-secondary mt-2" (click)="addNumber()">Add Phone Number</button>
+            <input id="newPhoneNumber" 
+                   [(ngModel)]="newPhoneNumber" 
+                   name="newPhoneNumber" 
+                   class="form-control"
+                   pattern="[0-9]{11}"
+                   #phoneInput="ngModel">
+            @if(phoneInput.invalid && phoneInput.touched){
+              <div class="text-danger">Must be 11 digits</div>
+            }
+            <button type="button" 
+                    class="btn btn-secondary mt-2" 
+                    (click)="addNumber()"
+                    [disabled]="!newPhoneNumber || phoneInput.invalid">
+              Add Phone Number
+            </button>
             <ul class="list-group list-group-flush mt-3">
               @for (phone of user?.profile?.phone_numbers; track $index) {
                 <li class="list-group-item d-flex justify-content-between">
@@ -107,7 +218,8 @@
               }
             </ul>
           </div>
-  
+    
+          <!-- Payment Details -->
           <p><strong>Payment Details:</strong></p>
           @if (user.payment_details?.card?.length) {
             Cards:
@@ -120,21 +232,53 @@
               }
             </ul>
           }
+          
+          <!-- New Card -->
           <div class="mb-3">
             <label for="cardNumber" class="form-label">New Card:</label>
-            <input id="cardNumber" [(ngModel)]="newCard.card_number" name="cardNumber" class="form-control" placeholder="Card Number">
-            <button type="button" class="btn btn-secondary mt-2" (click)="addCard()">Add Card</button>
+            <input id="cardNumber" 
+                   [(ngModel)]="newCard.card_number" 
+                   name="cardNumber" 
+                   class="form-control" 
+                   placeholder="Card Number"
+                   pattern="[0-9]{16}"
+                   #cardInput="ngModel">
+            @if(cardInput.invalid && cardInput.touched){
+              <div class="text-danger">Must be 16 digits</div>
+            }
+            <button type="button" 
+                    class="btn btn-secondary mt-2" 
+                    (click)="addCard()"
+                    [disabled]="!newCard.card_number || cardInput.invalid">
+              Add Card
+            </button>
           </div>
+    
+          <!-- Online Wallet -->
           <div class="mb-3">
             <label for="onlineWallet" class="form-label">Online Wallet:</label>
-            <input id="onlineWallet" [(ngModel)]="user.payment_details.online_wallet" name="onlineWallet" class="form-control" placeholder="Enter Online Wallet">
+            <input id="onlineWallet" 
+                   [(ngModel)]="user.payment_details.online_wallet" 
+                   name="onlineWallet" 
+                   class="form-control" 
+                   placeholder="Enter Online Wallet"
+                   pattern="[0-9]{11}"
+                   #walletInput="ngModel">
+            @if(walletInput.invalid && walletInput.touched){
+              <div class="text-danger">Please enter a valid email address</div>
+            }
           </div>
-
+    
           <div class="text-center">
-            <button type="submit" class="btn btn-success">Save Changes</button>
+            <button type="submit" 
+                    class="btn btn-success"
+                    [disabled]="profileForm.invalid">
+              Save Changes
+            </button>
           </div>
         </form>
       </div>
+
     }
   } @else {
     <div class="alert alert-info text-center">Loading user profile...</div>

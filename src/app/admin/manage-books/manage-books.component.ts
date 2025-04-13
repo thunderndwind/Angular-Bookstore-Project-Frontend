@@ -16,6 +16,12 @@ export class ManageBooksComponent implements OnInit {
   error: string | null = null;
   uploadProgress: number | null = null;
 
+  currentPage: number = 1;
+  itemsPerPage: number = 5;
+  totalItems: number = 0;
+  totalPages: number = 0;
+  Math = Math;
+
   // Form data
   showForm: boolean = false;
   isEditing: boolean = false;
@@ -38,15 +44,49 @@ export class ManageBooksComponent implements OnInit {
     this.isLoading = true;
     this.adminService.getBooks().subscribe({
       next: (data) => {
-        this.books = data.books || [];
+        const allBooks = data.books || [];
+        
+        this.totalItems = allBooks.length;
+        this.totalPages = Math.ceil(this.totalItems / this.itemsPerPage);
+        
+        const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+        const endIndex = Math.min(startIndex + this.itemsPerPage, this.totalItems);
+        this.books = allBooks.slice(startIndex, endIndex);
+        
         this.isLoading = false;
       },
       error: (err) => {
         this.error = 'Failed to load books. Please try again.';
         this.isLoading = false;
-        console.error('Error loading books:', err);
       }
     });
+  }
+
+  goToPage(page: number) {
+    if (page >= 1 && page <= this.totalPages && page !== this.currentPage) {
+      this.currentPage = page;
+      this.loadBooks();
+    }
+  }
+
+  previousPage() {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+      this.loadBooks();
+    }
+  }
+
+  nextPage() {
+    if (this.currentPage < this.totalPages) {
+      this.currentPage++;
+      this.loadBooks();
+    }
+  }
+
+  changeItemsPerPage(newLimit: number) {
+    this.itemsPerPage = newLimit;
+    this.currentPage = 1; // Reset to first page when changing items per page
+    this.loadBooks();
   }
 
   openAddForm() {
