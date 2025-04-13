@@ -16,7 +16,6 @@ export class UserProfileComponent {
 
   constructor(
     private userService: UserService,
-    private route: ActivatedRoute
   ) { }
 
   ngOnInit(): void {
@@ -33,11 +32,8 @@ export class UserProfileComponent {
 
   saveChanges(): void {
     this.isEditMode = false;
-    console.log('ana not saved');
     this.userService.updateUser(this.user._id, this.user).subscribe(updateResponse => {
-      console.log('ana saved');
       this.user = structuredClone(updateResponse.user);
-      console.log(this.user);
     });
   }
 
