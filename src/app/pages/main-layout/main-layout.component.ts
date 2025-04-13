@@ -15,15 +15,15 @@ import { filter } from 'rxjs/operators';
 export class MainLayoutComponent implements OnInit {
   isHomePage = false;
 
-  constructor(private router: Router) {}
-  
+  constructor(private router: Router) { }
+
   ngOnInit() {
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe((event: any) => {
       this.isHomePage = event.url === '/' || event.url === '/home';
     });
-    
+
     this.isHomePage = this.router.url === '/' || this.router.url === '/home';
   }
 }
