@@ -1,0 +1,10 @@
+<div class="toast-container">
+    @for (toast of toasts(); track toast.id) {
+    <div
+        [ngClass]="['toast', getToastClass(toast.type)]"
+        @fadeInOut>
+        {{toast.message}}
+
+    </div>
+    }
+</div>

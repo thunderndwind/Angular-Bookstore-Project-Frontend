@@ -20,6 +20,13 @@ export class HeaderComponent {
     this.authService.logout();
     this.router.navigate(['/login']);
   }
+  canAddToCart(): boolean {
+    if (!this.authService.isLoggedIn() || this.authService.isAdmin()) {
+      return false;
+    }
+
+    return true;
+  }
 
   toggleNavbar() {
     this.isNavbarCollapsed = !this.isNavbarCollapsed;

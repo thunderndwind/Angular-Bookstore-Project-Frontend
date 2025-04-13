@@ -13,7 +13,7 @@ export class AuthService {
   private refreshTokenKey = 'refresh_token';
 
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private http: HttpClient, private router: Router) { }
 
   async login(email: string, password: string): Promise<any> {
     const response = await fetch(`${this.apiUrl}/login`, {
@@ -22,7 +22,7 @@ export class AuthService {
       body: JSON.stringify({ email, password }),
     });
     const data = await response.json();
-    
+
     if (data.accessToken && data.refreshToken) {
       this.setTokens(data.accessToken, data.refreshToken);
     }
@@ -32,7 +32,7 @@ export class AuthService {
 
 
   async register(user: any): Promise<any> {
-      const response = await fetch(`${this.apiUrl}/signup`, {
+    const response = await fetch(`${this.apiUrl}/signup`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -44,12 +44,12 @@ export class AuthService {
         confirmPassword: user.confirmPassword,
       }),
     });
-  
+
     const data = await response.json();
     if (data.accessToken && data.refreshToken) {
       this.setTokens(data.accessToken, data.refreshToken);
     }
-  
+
     return data;
   }
 
@@ -93,10 +93,23 @@ export class AuthService {
     return null;
   }
 
+  getCurrentUserRole() {
+    const token = localStorage.getItem('access_token');
+    if (token) {
+      const decodedToken: any = jwtDecode(token);
+      return decodedToken.role;
+    }
+    return null;
+  }
+
+  isAdmin(): boolean {
+    const role = this.getCurrentUserRole();
+    return role && role === 'admin';
+  }
 
   async refreshAccessToken(): Promise<string | null> {
     const refreshToken = this.getRefreshToken();
-    
+
     if (!refreshToken) {
       return null;
     }
@@ -107,14 +120,14 @@ export class AuthService {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ refreshToken }),
       });
-      
+
       const data = await response.json();
-      
+
       if (data.accessToken) {
         localStorage.setItem(this.accessTokenKey, data.accessToken);
         return data.accessToken;
       }
-      
+
       return null;
     } catch (error) {
       console.error('Failed to refresh token:', error);

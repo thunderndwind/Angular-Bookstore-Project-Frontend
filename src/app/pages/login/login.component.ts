@@ -34,7 +34,11 @@ export class LoginComponent {
       console.log('Login response:', res);
 
       if (res.accessToken && res.refreshToken) {
-        this.router.navigate(['/']);
+        if (this.authService.isAdmin()) {
+          this.router.navigate(['/admin/dashboard']);
+        } else {
+          this.router.navigate(['/home']);
+        }
       } else {
         this.errorMessage = res.message || 'Invalid credentials';
       }
@@ -43,6 +47,7 @@ export class LoginComponent {
       this.errorMessage = "Login failed. Please try again.";
     }
   }
+
 
   googleLogin() {
     this.authService.googleLogin();

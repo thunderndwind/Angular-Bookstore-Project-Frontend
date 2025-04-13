@@ -4,8 +4,7 @@ import { Socket, io } from 'socket.io-client';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
 import { CloseScrollStrategy } from '@angular/cdk/overlay';
-
-
+import { Toast } from '../../interfaces/toast';
 
 @Injectable({
   providedIn: 'root'
@@ -15,16 +14,15 @@ export class NotificationService {
   private socket: Socket;
   private notificationsSubject = new BehaviorSubject<any[]>([]);
   public notifications$ = this.notificationsSubject.asObservable();
+  private toastSubject = new BehaviorSubject<Toast | null>(null);
 
   public updateNotifications(notifications: any[]): void {
     this.notificationsSubject.next(notifications);
   }
-  
-  
-  constructor(private http: HttpClient, private authService: AuthService) { 
+
+  constructor(private http: HttpClient, private authService: AuthService) {
     this.socket = io(this.apiUrl, { transports: ['websocket'] });
     this.setupSocketListeners();
-
   }
 
   private setupSocketListeners() {
@@ -35,10 +33,10 @@ export class NotificationService {
   }
 
   getNotifications(page: number, limit: number): Observable<any> {
-    const userId = this.authService.getCurrentUserId(); 
+    const userId = this.authService.getCurrentUserId();
     return this.http.get(`${this.apiUrl}/notifications/user/${userId}`, {
       params: { page, limit },
-    });CloseScrollStrategy
+    }); CloseScrollStrategy
   }
 
   markAsRead(notificationId: string): Observable<any> {
@@ -49,7 +47,7 @@ export class NotificationService {
   }
 
   markAllAsRead(): Observable<any> {
-    const userId = this.authService.getCurrentUserId(); 
+    const userId = this.authService.getCurrentUserId();
 
     return this.http.put(`${this.apiUrl}/notifications/user/${userId}/read-all`, {});
   }
@@ -59,14 +57,24 @@ export class NotificationService {
   }
 
   deleteAllNotifications(): Observable<any> {
-    const userId = this.authService.getCurrentUserId(); 
+    const userId = this.authService.getCurrentUserId();
     return this.http.delete(`${this.apiUrl}/notifications/user/${userId}`);
   }
 
   getUnreadCount(): Observable<any> {
-    const userId = this.authService.getCurrentUserId(); 
+    const userId = this.authService.getCurrentUserId();
     return this.http.get(`${this.apiUrl}/notifications/user/${userId}/unread-count`);
   }
 
+  showToast(toast: Toast): void {
+    this.toastSubject.next(toast);
+    // setTimeout(() => {
+    //   this.toastSubject.next(null);
+    // }, toast.duration || 2000);
+  }
+
+  getToasts(): Observable<Toast | null> {
+    return this.toastSubject.asObservable();
+  }
 }
 

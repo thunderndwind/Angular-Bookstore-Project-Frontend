@@ -1,14 +1,22 @@
 <div class="book-card">
   <!-- Updated to handle both img and image field names -->
-  <img [src]="book.img ||  book.image" alt="Book Cover: {{book.title}}" class="book-image">
+  <img [src]="book.img ||  book.image" alt="Book Cover: {{book.title}}"
+    class="book-image">
   <div class="book-details">
     <h3 class="book-title">{{ book.title }}</h3>
     <p class="price">${{ book.price | number:'1.2-2' }}</p>
     <!-- Add null check for description -->
-    <p class="description" *ngIf="book.description">{{ book.description | slice:0:100 }}{{ book.description.length > 100 ? '...' : '' }}</p>
+    <p class="description" *ngIf="book.description">{{ book.description |
+      slice:0:100 }}{{ book.description.length > 100 ? '...' : '' }}</p>
     <div class="button-group">
-      <button class="view-button" (click)="viewBookDetails()">View Details</button>
-      <button class="cart-button" (click)="addToCart()">Add to Cart</button>
+      <button class="view-button" (click)="viewBookDetails()">View
+        Details</button>
+      <ng-container *ngIf="canAddToCart()">
+        <button (click)="addToCart()" class="cart-button"
+          [disabled]="addingToCart">
+          Add to Cart
+        </button>
+      </ng-container>
     </div>
   </div>
 </div>
