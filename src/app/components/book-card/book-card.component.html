@@ -14,7 +14,11 @@
       <ng-container *ngIf="canAddToCart()">
         <button (click)="addToCart()" class="cart-button"
           [disabled]="addingToCart">
+          @if (addingToCart) {
+          <div class="spinner"></div> Adding to Cart
+          } @else {
           Add to Cart
+          }
         </button>
       </ng-container>
     </div>

@@ -44,10 +44,9 @@ export const routes: Routes = [
             },
             { path: 'order/user', component: OrderHistoryComponent, title: 'Order History', canActivate: [authGuard, userGuard] },
             { path: 'details/:id', component: DetailsPageComponent, title: 'Details Page' },
-            // { path: 'cart', component: CartComponent, canActivate: [authGuard] },
+            { path: 'cart', component: CartComponent, canActivate: [authGuard, userGuard] },
             { path: 'forbidden', component: ForbiddenComponent, canActivate: [authGuard] },
             { path: 'user', component: UserProfileComponent, title: 'User Profile', canActivate: [authGuard, userGuard] },
-
         ]
     },
 

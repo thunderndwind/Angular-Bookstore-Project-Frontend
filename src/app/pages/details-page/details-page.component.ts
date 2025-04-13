@@ -4,13 +4,17 @@ import { Book, BookResponse } from '../../services/details/books';
 import { Review } from '../../services/details/review';
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute, Event, NavigationEnd } from '@angular/router';
-import { ViewportScroller } from '@angular/common';
+import { CommonModule, ViewportScroller } from '@angular/common';
 import { CartService } from '../../services/cart/cart.service';
+import { NotificationService } from '../../services/notification/notification.service';
+import { AuthService } from '../../services/auth/auth.service';
+import { ToastComponent } from '../../components/toast/toast.component';
 
 
 @Component({
   selector: 'app-details-page',
-  imports: [FormsModule],
+  standalone: true,
+  imports: [FormsModule, CommonModule],
   templateUrl: './details-page.component.html',
   styleUrl: './details-page.component.css'
 })
@@ -35,6 +39,9 @@ export class DetailsPageComponent {
     private router: Router,
     private viewportScroller: ViewportScroller,
     private cartService: CartService,
+    private notificationService: NotificationService,
+    private authService: AuthService,
+
 
   ) { }
 
@@ -141,27 +148,55 @@ export class DetailsPageComponent {
     this.showReviewForm = !this.showReviewForm;
   }
 
+  canAddToCart(): boolean {
+    return !this.authService.isAdmin();
+  }
+
   addToCart(): void {
-    if (!this.user._id) {
-      this.router.navigate(['/login']);
+
+    this.addingToCart = true;
+    if (!this.authService.isLoggedIn()) {
+      this.notificationService.showToast({
+        message: 'Please log in to add items to your cart',
+        type: 'warning',
+        duration: 4000
+      });
+      this.addingToCart = false;
+      return;
     }
 
     if (!this.book || !this.book._id) {
       console.error('Cannot add to cart: book ID is missing');
+      this.addingToCart = false;
       return;
     }
 
-    this.addingToCart = true;
+
     this.cartService.addToCart(this.book._id, this.quantity).subscribe({
       next: (response) => {
         console.log('Book added to cart:', this.book.title);
+        // Add success feedback if desired
+        this.notificationService.showToast({
+          message: 'Book added successfully',
+          type: 'success',
+          duration: 4000
+        });
         this.addingToCart = false;
       },
       error: (error) => {
         console.error('Error adding to cart:', error);
+        // Handle specific error cases
+
         if (error.status === 401) {
           this.router.navigate(['/login']);
+        } else {
+          this.notificationService.showToast({
+            message: error.error?.message || 'Error adding to cart. Please try again.',
+            type: 'error',
+            duration: 4000
+          });
         }
+
         this.addingToCart = false;
       }
     });

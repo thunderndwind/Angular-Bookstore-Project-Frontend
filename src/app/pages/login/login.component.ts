@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from "@angular/forms";
 import { RouterLink, Router } from "@angular/router";
 import { AuthService } from "../../services/auth/auth.service";
+import { NotificationService } from '../../services/notification/notification.service';
 
 @Component({
   selector: 'app-login',
@@ -18,7 +19,8 @@ export class LoginComponent {
 
   constructor(
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private toastService: NotificationService,
   ) { }
 
   async login() {
@@ -39,6 +41,11 @@ export class LoginComponent {
         } else {
           this.router.navigate(['/home']);
         }
+        this.toastService.showToast({
+          message: 'Loged in successfully',
+          type: 'success',
+          duration: 4000
+        });
       } else {
         this.errorMessage = res.message || 'Invalid credentials';
       }

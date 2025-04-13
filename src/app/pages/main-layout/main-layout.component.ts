@@ -13,8 +13,7 @@ import { ToastComponent } from '../../components/toast/toast.component';
     CommonModule,
     RouterOutlet,
     HeaderComponent,
-    FooterComponent,
-    ToastComponent
+    FooterComponent
   ],
   templateUrl: './main-layout.component.html',
   styleUrl: './main-layout.component.css'

@@ -60,6 +60,11 @@ export class BookCardComponent {
       next: (response) => {
         console.log('Book added to cart:', this.book.title);
         // Add success feedback if desired
+        this.toastService.showToast({
+          message: 'Book added successfully',
+          type: 'success',
+          duration: 4000
+        });
         this.addingToCart = false;
       },
       error: (error) => {

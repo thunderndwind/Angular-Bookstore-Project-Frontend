@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { CartService } from '../../services/cart/cart.service';
+import { NotificationService } from '../../services/notification/notification.service';
 import { Router, RouterLink } from '@angular/router';
+import { OrderService } from '../../services/order/order.service';
 
 @Component({
   selector: 'app-cart',
@@ -17,7 +19,9 @@ export class CartComponent {
 
   constructor(
     private cartService: CartService,
-    private router: Router
+    private router: Router,
+    private notificationService: NotificationService,
+    private orderService: OrderService
   ) { }
 
   ngOnInit(): void {
@@ -83,6 +87,49 @@ export class CartComponent {
   }
 
   checkout(): void {
-    this.router.navigate(['/checkout']);
+    if (this.cartItems.length === 0) {
+      this.notificationService.showToast({
+        message: 'Your cart is empty',
+        type: 'warning',
+        duration: 3000
+      });
+      return;
+    }
+
+    const totalPrice = this.cartItems.reduce((sum, item) => sum + item.total, 0);
+
+    this.orderService.createOrder(this.cartItems, totalPrice).subscribe({
+      next: (response) => {
+        this.notificationService.showToast({
+          message: 'Order placed successfully!',
+          type: 'success',
+          duration: 3000
+        });
+
+        // Clear cart after successful order
+        this.cartService.clearCart().subscribe({
+          next: () => {
+            this.cartItems = [];
+            this.router.navigate(['/order/user']);
+          },
+          error: (error) => {
+            console.error('Error clearing cart:', error);
+          }
+        });
+      },
+      error: (error) => {
+        let errorMessage = 'Failed to place order';
+
+        if (error.error?.message?.includes('stock')) {
+          errorMessage = error.error.message;
+        }
+
+        this.notificationService.showToast({
+          message: errorMessage,
+          type: 'error',
+          duration: 4000
+        });
+      }
+    });
   }
 }

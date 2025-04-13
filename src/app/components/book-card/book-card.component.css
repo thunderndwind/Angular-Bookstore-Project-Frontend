@@ -77,8 +77,33 @@
 .cart-button {
   background-color: #152a66;
   color: rgb(255, 255, 255);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 120px;
 }
 
 .cart-button:hover {
-  background-color: #6776a1;
+  background-color: #344880;
+}
+
+.cart-button:disabled {
+  background-color: #8896bd;
+  cursor: not-allowed;
+}
+
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid #ffffff;
+  border-radius: 50%;
+  border-top-color: transparent;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }

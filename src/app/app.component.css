@@ -15,3 +15,18 @@
   margin-bottom: 50px;
   background-color: #242424;
 }
+
+::ng-deep .toast-container {
+  z-index: 99999 !important;
+  position: fixed !important;
+}
+
+.toast-container {
+  position: fixed !important;
+  z-index: 99999 !important;
+}
+
+.toast {
+  opacity: 1 !important;
+  visibility: visible !important;
+}

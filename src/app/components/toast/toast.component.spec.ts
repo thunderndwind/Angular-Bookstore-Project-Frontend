@@ -10,7 +10,7 @@ describe('ToastComponent', () => {
     await TestBed.configureTestingModule({
       imports: [ToastComponent]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(ToastComponent);
     component = fixture.componentInstance;

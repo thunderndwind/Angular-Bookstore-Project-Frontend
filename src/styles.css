@@ -23,3 +23,20 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
   */
+::ng-deep .toast-container {
+  z-index: 99999 !important;
+  position: fixed !important;
+}
+
+/* Global toast styles */
+.toast-container {
+  position: fixed !important;
+  z-index: 99999 !important;
+  pointer-events: none;
+}
+
+.toast {
+  pointer-events: auto !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}

@@ -3,6 +3,7 @@
 
 main {
   background-color: #f0f2f5; /* Light gray background */
+  overflow: visible !important;
 }
 
 .container {
